@@ -1,0 +1,160 @@
+# ============================================
+# PYTHON
+# ============================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+eggs/
+.eggs/
+
+# Testing
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.hypothesis/
+
+# Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# ============================================
+# NODE.JS (Frontend)
+# ============================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+.npm
+.yarn/
+
+# Build outputs
+/build
+/dist
+
+# ============================================
+# IDE / EDITORS
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+.history/
+
+# ============================================
+# ENVIRONMENT VARIABLES
+# ============================================
+.env
+.env.local
+.env.*.local
+*.env
+!.env.example
+
+# ============================================
+# DOCKER
+# ============================================
+*.dockerignore
+
+# ============================================
+# TERRAFORM
+# ============================================
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfvars
+!terraform.tfvars.example
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform.lock.hcl
+
+# ============================================
+# KUBERNETES
+# ============================================
+kubeconfig
+*.kubeconfig
+kube-config
+
+# ============================================
+# LOGS Y DATA LOCAL
+# ============================================
+logs/
+*.log
+data/
+*.sqlite
+*.db
+*.sqlite3
+
+# ============================================
+# OS
+# ============================================
+.DS_Store
+Thumbs.db
+*.swp
+*.bak
+
+# ============================================
+# SECRETS (NUNCA SUBIR)
+# ============================================
+secrets/
+*.pem
+*.key
+*.crt
+*.cert
+*.p12
+*.pfx
+
+# ============================================
+# COVERAGE
+# ============================================
+coverage/
+.nyc_output/
+*.lcov
+
+# ============================================
+# TEMPORARY FILES
+# ============================================
+tmp/
+temp/
+*.tmp
+*.temp
+
+# ============================================
+# ALEMBIC
+# ============================================
+alembic.ini.local

@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: appointments-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: appointments_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - microservices-network
+
+  # Redis (Cache & Message Broker)
+  redis:
+    image: redis:7-alpine
+    container_name: appointments-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - microservices-network
+
+  # Backend API (uncomment after Dockerfile is created)
+  # backend-api:
+  #   build:
+  #     context: ./backend-api
+  #     dockerfile: Dockerfile
+  #   container_name: backend-api
+  #   ports:
+  #     - "8000:8000"
+  #   environment:
+  #     DATABASE_URL: postgresql://postgres:postgres@postgres:5432/appointments_db
+  #     REDIS_HOST: redis
+  #     REDIS_PORT: 6379
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #   networks:
+  #     - microservices-network
+  #   command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  microservices-network:
+    driver: bridge
