@@ -7,13 +7,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from prometheus_fastapi_instrumentator import Instrumentator
 
 from app.core.config import settings
-
-# from app.features.appointments.router import router as appointments_router
+from app.features.appointments.router import router as appointments_router
 
 # Create FastAPI application
 app = FastAPI(
     title=settings.APP_NAME,
-    description="Microservices platform with Vertical Slice Architecture and CQRS",
+    description="Production-ready microservices API with Vertical Slice Architecture and CQRS pattern",
     version="0.1.0",
     docs_url="/docs",
     redoc_url="/redoc",
@@ -32,13 +31,12 @@ app.add_middleware(
 # Prometheus metrics instrumentation
 Instrumentator().instrument(app).expose(app)
 
-
-# Include routers (Vertical Slices)
-# app.include_router(
-#     appointments_router,
-#     prefix=f"{settings.API_V1_PREFIX}/appointments",
-#     tags=["Appointments"]
-# )
+# Include feature routers (Vertical Slices)
+app.include_router(
+    appointments_router,
+    prefix=f"{settings.API_V1_PREFIX}/appointments",
+    tags=["Appointments"]
+)
 
 
 @app.get("/")
@@ -51,7 +49,10 @@ async def root():
         "pattern": "CQRS (Command Query Responsibility Segregation)",
         "docs": "/docs",
         "health": "/health",
-        "metrics": "/metrics"
+        "metrics": "/metrics",
+        "features": [
+            "appointments"
+        ]
     }
 
 

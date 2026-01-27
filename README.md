@@ -263,10 +263,10 @@ Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for de
 
 ## 👤 Author
 
-**David [Tu Apellido]**
-- GitHub: [@tu-usuario](https://github.com/tu-usuario)
-- LinkedIn: [tu-perfil](https://linkedin.com/in/tu-perfil)
-- Email: tu-email@ejemplo.com
+**David Castro**
+- GitHub: [@jdabid](https://github.com/jdabid)
+- LinkedIn: [david-castro-vanegas](https://www.linkedin.com/in/david-castro-vanegas/)
+- Email: dabid.banegas@gmail.com
 
 ## 📄 License
 

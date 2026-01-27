@@ -14,4 +14,3 @@ pylint==3.0.3
 
 # Security
 bandit==1.7.6
-safety==3.0.1
