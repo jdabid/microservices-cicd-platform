@@ -17,9 +17,11 @@ python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 python-multipart==0.0.6
 
-# Redis
-redis==5.0.1
+# Redis & Task Queue
+redis==4.6.0
 hiredis==2.3.2
+celery[redis]==5.3.4
+flower==2.0.1
 
 # HTTP Client
 httpx==0.26.0

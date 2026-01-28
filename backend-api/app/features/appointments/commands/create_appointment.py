@@ -2,6 +2,8 @@
 Create Appointment Command (CQRS)
 Handles appointment creation - modifies system state
 """
+from app.tasks.email_tasks import send_appointment_confirmation_email
+
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from datetime import datetime
@@ -60,6 +62,15 @@ class CreateAppointmentCommand:
             self.db.add(db_appointment)
             self.db.commit()
             self.db.refresh(db_appointment)
+
+            # 🆕 Enviar email de confirmación asíncrono
+            send_appointment_confirmation_email.delay(
+                patient_email=db_appointment.patient_email,
+                patient_name=db_appointment.patient_name,
+                doctor_name=db_appointment.doctor_name,
+                appointment_date=db_appointment.appointment_date.isoformat(),
+                appointment_id=db_appointment.id
+            )
 
             return db_appointment
 

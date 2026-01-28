@@ -1,0 +1,65 @@
+# =============================================================================
+# Celery Worker Dockerfile
+# Shares base with backend-api for consistency
+# =============================================================================
+FROM python:3.12-slim-bookworm AS builder
+
+LABEL maintainer="David Castro <dabid.banegas@gmailc.com>"
+LABEL description="Celery Worker - Builder Stage"
+
+WORKDIR /build
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy and install requirements
+COPY requirements.txt ./
+RUN python -m venv /opt/venv && \
+    /opt/venv/bin/pip install --no-cache-dir --upgrade pip && \
+    /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
+
+# =============================================================================
+# Runtime Stage
+# =============================================================================
+FROM python:3.12-slim-bookworm AS runtime
+
+LABEL maintainer="David Castro <david@example.com>"
+LABEL description="Celery Worker - Production Image"
+LABEL version="0.2.0"
+
+# Environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PATH="/opt/venv/bin:$PATH" \
+    C_FORCE_ROOT="true"
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq5 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN groupadd -r celeryuser && \
+    useradd -r -g celeryuser -u 1001 -m -s /bin/bash celeryuser
+
+WORKDIR /app
+
+# Copy virtual environment from builder
+COPY --from=builder /opt/venv /opt/venv
+
+# Copy application code
+COPY --chown=celeryuser:celeryuser . .
+
+# Switch to non-root user
+USER celeryuser
+
+# Health check for worker
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD celery -A app.core.celery.celery_app inspect ping || exit 1
+
+# Run Celery worker
+CMD ["celery", "-A", "app.core.celery.celery_app", "worker", "--loglevel=info", "--concurrency=2"]

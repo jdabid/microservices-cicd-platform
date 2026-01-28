@@ -122,7 +122,7 @@ microservices-cicd-platform/
 ### Local Development
 ```bash
 # Clone repository
-git clone https://github.com/tu-usuario/microservices-cicd-platform.git
+git clone https://github.com/jdabid/microservices-cicd-platform.git
 cd microservices-cicd-platform
 
 # Run setup script
