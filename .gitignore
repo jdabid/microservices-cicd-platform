@@ -160,3 +160,4 @@ temp/
 alembic.ini.local
 
 Cronograma
+verify-day9.sh

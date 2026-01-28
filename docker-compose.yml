@@ -51,7 +51,7 @@ services:
       DEBUG: "True"
       SECRET_KEY: dev-secret-key-not-for-production
       API_V1_PREFIX: /api/v1
-      BACKEND_CORS_ORIGINS: '["http://localhost:3000","http://localhost:8000"]'
+      BACKEND_CORS_ORIGINS: '["http://localhost:3000","http://localhost:80","http://frontend"]'
     depends_on:
       postgres:
         condition: service_healthy
@@ -106,6 +106,27 @@ services:
       - celery-worker
     networks:
       - microservices-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: microservices-frontend:latest
+    container_name: frontend
+    ports:
+      - "80:80"
+    environment:
+      VITE_API_URL: http://localhost:8000
+    depends_on:
+      - backend-api
+    networks:
+      - microservices-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
 volumes:
   postgres_data:
