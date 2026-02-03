@@ -1,0 +1,76 @@
+# ===========================================
+# Docker Compose for Production
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+# ===========================================
+version: '3.8'
+
+services:
+  postgres:
+    # No expose ports externally in production
+    ports: []
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    secrets:
+      - postgres_password
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+  
+  redis:
+    ports: []
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+  
+  backend-api:
+    # No port mapping in production (use reverse proxy)
+    ports: []
+    environment:
+      DEBUG: "False"
+      LOG_LEVEL: WARNING
+    secrets:
+      - api_secret_key
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+  
+  celery-worker:
+    environment:
+      LOG_LEVEL: WARNING
+    secrets:
+      - api_secret_key
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+  
+  flower:
+    # Require authentication in production
+    environment:
+      FLOWER_BASIC_AUTH: ${FLOWER_BASIC_AUTH}
+  
+  frontend:
+    ports: []
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 10s
+
+secrets:
+  postgres_password:
+    external: true
+  api_secret_key:
+    external: true

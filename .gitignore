@@ -160,4 +160,14 @@ temp/
 alembic.ini.local
 
 Cronograma
-verify-day9.sh
+PROGRESS.md
+docs/learnings/
+docs/verification
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Data directories
+data/
+logs/

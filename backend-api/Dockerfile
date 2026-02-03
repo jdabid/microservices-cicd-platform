@@ -4,7 +4,7 @@
 FROM python:3.12-slim-bookworm AS builder
 
 # Metadata
-LABEL maintainer="David Castro <david@example.com>"
+LABEL maintainer="David Castro <dabid.banegas@gmail.com>"
 LABEL description="Backend API - Builder Stage"
 
 # Set working directory
