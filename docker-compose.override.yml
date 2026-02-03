@@ -1,0 +1,30 @@
+# ===========================================
+# Docker Compose Override for Development
+# Automatically loaded with docker-compose.yml
+# ===========================================
+version: '3.8'
+
+services:
+  backend-api:
+    volumes:
+      # Mount source code for hot reload
+      - ./backend-api/app:/app/app:ro
+    environment:
+      DEBUG: "True"
+      LOG_LEVEL: DEBUG
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    
+  celery-worker:
+    volumes:
+      - ./backend-api/app:/app/app:ro
+    environment:
+      LOG_LEVEL: DEBUG
+    command: celery -A app.core.celery.celery_app worker --loglevel=debug --concurrency=2
+  
+  postgres:
+    ports:
+      - "5432:5432"  # Expose for DB tools
+  
+  redis:
+    ports:
+      - "6379:6379"  # Expose for Redis CLI
