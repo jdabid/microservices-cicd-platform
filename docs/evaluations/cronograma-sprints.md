@@ -1,7 +1,7 @@
 # Cronograma de Sprints — Tracking en Tiempo Real
 
 > Este documento se actualiza automaticamente cada vez que se finaliza una User Story.
-> Ultima actualizacion: 2026-03-06
+> Ultima actualizacion: 2026-03-07
 
 ---
 
@@ -10,19 +10,19 @@
 | Metrica | Valor |
 |---------|-------|
 | Total User Stories | 50 |
-| Completadas | 5 |
+| Completadas | 9 |
 | En progreso | 0 |
-| Pendientes | 45 |
+| Pendientes | 41 |
 | Story Points totales | 136 |
-| Story Points completados | 11 |
-| Story Points restantes | 125 |
-| Velocidad actual | 11 SP (Sprint 1 en progreso) |
+| Story Points completados | 21 |
+| Story Points restantes | 115 |
+| Velocidad actual | 21 SP (Sprint 1 en progreso) |
 | Sprint actual | Sprint 1 EN PROGRESO |
 
 ### Progreso Global
 
 ```
-Completado: [###___________________________________] 8%  (11/136 SP)
+Completado: [######________________________________] 15%  (21/136 SP)
 ```
 
 ---
@@ -32,10 +32,10 @@ Completado: [###___________________________________] 8%  (11/136 SP)
 **Sprint Goal:** El repositorio esta limpio, profesional, con autenticacion JWT y manejo de errores implementados.
 **Duracion:** Semana 1-2
 **Estado:** EN PROGRESO
-**SP Completados:** 11/32
+**SP Completados:** 21/32
 
 ```
-Sprint 1: [#############_________________________] 34%  (11/32 SP)
+Sprint 1: [#########################_____________] 65%  (21/32 SP)
 ```
 
 | ID | User Story | SP | Estado | Branch | PR | Fecha |
@@ -47,10 +47,10 @@ Sprint 1: [#############_________________________] 34%  (11/32 SP)
 | US-05 | Sistema de excepciones centralizado | 3 | DONE | `feature/s1-US05-exception-handling` | [#8](https://github.com/jdabid/microservices-cicd-platform/pull/8) | 2026-03-06 |
 | US-06 | Completar feature patients/ con CRUD completo (CQRS) | 5 | PENDIENTE | — | — | — |
 | US-07 | Tests unitarios para patients/ (minimo 8 tests) | 3 | PENDIENTE | — | — | — |
-| US-08 | Corregir strings hardcodeados por enums en update_appointment.py | 1 | PENDIENTE | — | — | — |
-| US-09 | CORS configurado por ambiente y rate limiting en auth | 3 | PENDIENTE | — | — | — |
-| US-10 | Configurar ruff y mypy para calidad de codigo | 3 | PENDIENTE | — | — | — |
-| US-11 | Reemplazar psycopg2-binary por asyncpg | 3 | PENDIENTE | — | — | — |
+| US-08 | Corregir strings hardcodeados por enums en update_appointment.py | 1 | DONE | `feature/s1-US08-fix-enum-strings` | [#10](https://github.com/jdabid/microservices-cicd-platform/pull/10) | 2026-03-07 |
+| US-09 | CORS configurado por ambiente y rate limiting en auth | 3 | DONE | `feature/s1-US09-cors-rate-limiting` | [#13](https://github.com/jdabid/microservices-cicd-platform/pull/13) | 2026-03-07 |
+| US-10 | Configurar ruff y mypy para calidad de codigo | 3 | DONE | `feature/s1-US10-ruff-mypy` | [#11](https://github.com/jdabid/microservices-cicd-platform/pull/11) | 2026-03-07 |
+| US-11 | Reemplazar psycopg2-binary por asyncpg | 3 | DONE | `feature/s1-US11-asyncpg` | [#12](https://github.com/jdabid/microservices-cicd-platform/pull/12) | 2026-03-07 |
 | US-12 | Corregir time.sleep() en Celery tasks y datetime sin timezone | 1 | PENDIENTE | — | — | — |
 | US-13 | Corregir typos en Dockerfiles (emails en LABEL) | 1 | PENDIENTE | — | — | — |
 
@@ -60,6 +60,11 @@ Sprint 1: [#############_________________________] 34%  (11/32 SP)
 - US-05 completada primero (PR #8), US-04 despues (PR #9) - cherry-pick desde worktree
 - US-04 creo 17 archivos (676 lineas): auth feature completo con CQRS + 15 tests
 - US-05 creo 6 archivos (535 lineas): exception hierarchy + handlers + 30 tests
+- US-08, US-09, US-10, US-11 completadas en batch (agents en worktree + implementacion directa)
+- US-08: fix 1 linea hardcoded string → AppointmentStatus enum (PR #10)
+- US-09: slowapi rate limiting + CORS por ambiente (PR #13)
+- US-10: pyproject.toml con ruff + mypy config (PR #11)
+- US-11: asyncpg reemplaza psycopg2-binary, async session factory (PR #12)
 
 ---
 
@@ -202,7 +207,9 @@ Story Points
 Restantes
   136 |
       |
-  125 |   *  <- actual (5 US completadas, 11 SP)
+  125 |
+      |
+  115 |   *  <- actual (9 US completadas, 21 SP)
       |
   120 |
       |
@@ -231,3 +238,7 @@ Restantes
 | 2026-03-06 | US-03 | COMPLETADA | 1 | Bash (git rm --cached main.py, *.backup, *.corrupted) |
 | 2026-03-06 | US-05 | COMPLETADA | 3 | Agent (worktree isolation), Bash (cherry-pick, gh pr) |
 | 2026-03-06 | US-04 | COMPLETADA | 5 | Agent (worktree isolation), Bash (cherry-pick, gh pr) |
+| 2026-03-07 | US-08 | COMPLETADA | 1 | Edit (enum fix), Bash (gh pr) |
+| 2026-03-07 | US-10 | COMPLETADA | 3 | Agent (worktree), Write (pyproject.toml), Edit (requirements) |
+| 2026-03-07 | US-11 | COMPLETADA | 3 | Agent (worktree), Write (session.py, database.py), Edit (config, requirements) |
+| 2026-03-07 | US-09 | COMPLETADA | 3 | Edit (config, main, router, requirements), Bash (gh pr) |
