@@ -4,7 +4,7 @@
 # =============================================================================
 FROM python:3.12-slim-bookworm AS builder
 
-LABEL maintainer="David Castro <dabid.banegas@gmailc.com>"
+LABEL maintainer="David Castro <david.banegas@gmail.com>"
 LABEL description="Celery Worker - Builder Stage"
 
 WORKDIR /build
@@ -27,7 +27,7 @@ RUN python -m venv /opt/venv && \
 # =============================================================================
 FROM python:3.12-slim-bookworm AS runtime
 
-LABEL maintainer="David Castro <david@example.com>"
+LABEL maintainer="David Castro <david.banegas@gmail.com>"
 LABEL description="Celery Worker - Production Image"
 LABEL version="0.2.0"
 
