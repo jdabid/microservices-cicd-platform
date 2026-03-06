@@ -3,10 +3,19 @@ FastAPI Main Application
 Vertical Slice Architecture + CQRS Pattern
 """
 from fastapi import FastAPI
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from prometheus_fastapi_instrumentator import Instrumentator
+from starlette.exceptions import HTTPException
 
 from app.core.config import settings
+from app.common.exceptions import AppException
+from app.common.exceptions.handlers import (
+    app_exception_handler,
+    validation_exception_handler,
+    http_exception_handler,
+    general_exception_handler,
+)
 from app.features.appointments.router import router as appointments_router
 
 # Create FastAPI application
@@ -27,6 +36,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Register exception handlers
+app.add_exception_handler(AppException, app_exception_handler)
+app.add_exception_handler(RequestValidationError, validation_exception_handler)
+app.add_exception_handler(HTTPException, http_exception_handler)
+app.add_exception_handler(Exception, general_exception_handler)
 
 # Prometheus metrics instrumentation
 Instrumentator().instrument(app).expose(app)
