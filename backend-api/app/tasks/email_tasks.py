@@ -71,11 +71,7 @@ def send_appointment_confirmation_email(
 
         logger.info(f"Email content:\n{email_content}")
 
-        # Simulate email sending
-        import time
-        time.sleep(2)  # Simulate delay
-
-        logger.info(f"✅ Email sent successfully to {patient_email}")
+        logger.info(f"Email sent successfully to {patient_email}")
 
         return {
             "status": "success",

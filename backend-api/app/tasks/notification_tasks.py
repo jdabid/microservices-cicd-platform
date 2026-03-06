@@ -3,7 +3,7 @@ Notification Tasks (Celery)
 Asynchronous notifications and background processing
 """
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from app.core.celery.celery_app import celery_app
 
 logger = logging.getLogger(__name__)
@@ -23,7 +23,7 @@ def process_appointment_statistics():
 
     # TODO: Implement actual statistics calculation
     stats = {
-        "date": datetime.utcnow().isoformat(),
+        "date": datetime.now(timezone.utc).isoformat(),
         "total_appointments": 0,
         "scheduled": 0,
         "completed": 0,
@@ -60,7 +60,7 @@ def generate_daily_report():
     logger.info("Generating daily report...")
 
     report = {
-        "date": datetime.utcnow().date().isoformat(),
+        "date": datetime.now(timezone.utc).date().isoformat(),
         "new_appointments": 0,
         "cancelled_appointments": 0,
         "completed_appointments": 0
