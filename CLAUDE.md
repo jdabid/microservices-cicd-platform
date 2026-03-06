@@ -82,6 +82,9 @@ See `docs/evaluations/cronograma-sprints.md` for live tracking.
 - Never commit .env, .idea/, node_modules/, __pycache__/
 - Never commit files with real secrets or passwords
 
+## Error Log
+When encountering issues during development, check `docs/errors/` for documented errors and solutions from previous sprints. Before launching agents in worktree or parallelizing US, review the lessons learned to avoid repeating mistakes (e.g., agents cannot use Bash without explicit permission, worktrees can be auto-cleaned).
+
 ## Commands Available
 
 ### Git Workflow (usar en este orden)
