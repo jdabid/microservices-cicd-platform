@@ -1,6 +1,6 @@
 FROM node:20-alpine AS builder
 
-LABEL maintainer="David Castro <david@example.com>"
+LABEL maintainer="David Castro <david.banegas@gmail.com>"
 LABEL description="Frontend Builder Stage"
 
 WORKDIR /app
@@ -15,7 +15,7 @@ RUN npm run build
 
 FROM nginx:1.25-alpine AS runtime
 
-LABEL maintainer="David Castro <david@example.com>"
+LABEL maintainer="David Castro <david.banegas@gmail.com>"
 LABEL description="Frontend Production Image"
 LABEL version="0.2.0"
 
