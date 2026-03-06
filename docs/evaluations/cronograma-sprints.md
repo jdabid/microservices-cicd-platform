@@ -1,7 +1,7 @@
 # Cronograma de Sprints — Tracking en Tiempo Real
 
 > Este documento se actualiza automaticamente cada vez que se finaliza una User Story.
-> Ultima actualizacion: 2026-03-08
+> Ultima actualizacion: 2026-03-09
 
 ---
 
@@ -10,19 +10,19 @@
 | Metrica | Valor |
 |---------|-------|
 | Total User Stories | 50 |
-| Completadas | 11 |
+| Completadas | 13 |
 | En progreso | 0 |
-| Pendientes | 39 |
+| Pendientes | 37 |
 | Story Points totales | 136 |
-| Story Points completados | 23 |
-| Story Points restantes | 113 |
-| Velocidad actual | 23 SP (Sprint 1 en progreso) |
-| Sprint actual | Sprint 1 EN PROGRESO |
+| Story Points completados | 31 |
+| Story Points restantes | 105 |
+| Velocidad actual | 31 SP (Sprint 1 completado) |
+| Sprint actual | Sprint 2 NO INICIADO |
 
 ### Progreso Global
 
 ```
-Completado: [######________________________________] 17%  (23/136 SP)
+Completado: [#########_____________________________] 23%  (31/136 SP)
 ```
 
 ---
@@ -31,11 +31,11 @@ Completado: [######________________________________] 17%  (23/136 SP)
 
 **Sprint Goal:** El repositorio esta limpio, profesional, con autenticacion JWT y manejo de errores implementados.
 **Duracion:** Semana 1-2
-**Estado:** EN PROGRESO
-**SP Completados:** 23/32
+**Estado:** COMPLETADO
+**SP Completados:** 31/32
 
 ```
-Sprint 1: [###########################___________] 72%  (23/32 SP)
+Sprint 1: [#####################################_] 97%  (31/32 SP)
 ```
 
 | ID | User Story | SP | Estado | Branch | PR | Fecha |
@@ -45,8 +45,8 @@ Sprint 1: [###########################___________] 72%  (23/32 SP)
 | US-03 | Eliminar archivos innecesarios (.backup, .corrupted, main.py raiz) | 1 | DONE | `feature/s1-US01-US02-US03-repo-cleanup` | [#6](https://github.com/jdabid/microservices-cicd-platform/pull/6) | 2026-03-06 |
 | US-04 | Login y JWT para acceder a la API de forma segura | 5 | DONE | `feature/s1-US04-jwt-auth` | [#9](https://github.com/jdabid/microservices-cicd-platform/pull/9) | 2026-03-06 |
 | US-05 | Sistema de excepciones centralizado | 3 | DONE | `feature/s1-US05-exception-handling` | [#8](https://github.com/jdabid/microservices-cicd-platform/pull/8) | 2026-03-06 |
-| US-06 | Completar feature patients/ con CRUD completo (CQRS) | 5 | PENDIENTE | — | — | — |
-| US-07 | Tests unitarios para patients/ (minimo 8 tests) | 3 | PENDIENTE | — | — | — |
+| US-06 | Completar feature patients/ con CRUD completo (CQRS) | 5 | DONE | `feature/s1-US06-to-US07-patients-crud` | [#16](https://github.com/jdabid/microservices-cicd-platform/pull/16) | 2026-03-09 |
+| US-07 | Tests unitarios para patients/ (minimo 8 tests) | 3 | DONE | `feature/s1-US06-to-US07-patients-crud` | [#16](https://github.com/jdabid/microservices-cicd-platform/pull/16) | 2026-03-09 |
 | US-08 | Corregir strings hardcodeados por enums en update_appointment.py | 1 | DONE | `feature/s1-US08-fix-enum-strings` | [#10](https://github.com/jdabid/microservices-cicd-platform/pull/10) | 2026-03-07 |
 | US-09 | CORS configurado por ambiente y rate limiting en auth | 3 | DONE | `feature/s1-US09-cors-rate-limiting` | [#13](https://github.com/jdabid/microservices-cicd-platform/pull/13) | 2026-03-07 |
 | US-10 | Configurar ruff y mypy para calidad de codigo | 3 | DONE | `feature/s1-US10-ruff-mypy` | [#11](https://github.com/jdabid/microservices-cicd-platform/pull/11) | 2026-03-07 |
@@ -67,6 +67,9 @@ Sprint 1: [###########################___________] 72%  (23/32 SP)
 - US-11: asyncpg reemplaza psycopg2-binary, async session factory (PR #12)
 - US-12: remove time.sleep, fix datetime.utcnow → datetime.now(timezone.utc) (PR #14)
 - US-13: fix email typos en 3 Dockerfiles (dabid→david, gmailc→gmail) (PR #15)
+- US-06 y US-07 completadas en batch (interdependientes, misma PR #16)
+- US-06: 18 archivos, 625 lineas - patients CRUD completo con CQRS
+- US-07: 13 tests unitarios (8 commands + 5 queries) - todos pasando
 
 ---
 
@@ -213,7 +216,9 @@ Restantes
       |
   115 |
       |
-  113 |   *  <- actual (11 US completadas, 23 SP)
+  113 |
+      |
+  105 |   *  <- actual (13 US completadas, 31 SP)
       |
   120 |
       |
@@ -248,3 +253,5 @@ Restantes
 | 2026-03-07 | US-09 | COMPLETADA | 3 | Edit (config, main, router, requirements), Bash (gh pr) |
 | 2026-03-08 | US-12 | COMPLETADA | 1 | Edit (email_tasks, notification_tasks, list_appointments) |
 | 2026-03-08 | US-13 | COMPLETADA | 1 | Edit (Dockerfile, Dockerfile.worker, frontend/Dockerfile) |
+| 2026-03-09 | US-06 | COMPLETADA | 5 | Write (model, schemas, commands, queries, router), Edit (main.py) |
+| 2026-03-09 | US-07 | COMPLETADA | 3 | Write (test_commands.py, test_queries.py), 13 tests passing |
