@@ -83,14 +83,24 @@ See `docs/evaluations/cronograma-sprints.md` for live tracking.
 - Never commit files with real secrets or passwords
 
 ## Commands Available
-- `/sprint-status` - Check current sprint progress
-- `/implement` - Implement a specific user story from the backlog
+
+### Git Workflow (usar en este orden)
+- `/start-user-story US-XX` - Crea branch y marca US como EN PROGRESO
+- `/implement US-XX` - Implementa la US (codigo + tests)
+- `/finish-user-story` - Commit, push, PR, merge, actualiza tracker
+- `/git-workflow US-XX` - Ejecuta start + implement + finish en un solo comando
+- `/git-workflow US-06 US-07 US-08` - Batch: multiples US (detecta si son independientes o no)
+
+### Quality & Validation
 - `/test` - Run tests and check coverage
 - `/review` - Code review for current changes
+- `/pre-commit` - Run all pre-commit checks
 - `/docker-check` - Validate Docker configurations
 - `/k8s-check` - Validate Kubernetes manifests
+- `/terraform-validate` - Validate Terraform modules
 - `/security-audit` - Run security analysis
 - `/cleanup` - Find and fix repo cleanliness issues
-- `/terraform-validate` - Validate Terraform modules
-- `/pre-commit` - Run all pre-commit checks
-- `/update-sprint-tracker` - Update sprint tracking after completing a user story
+
+### Tracking
+- `/sprint-status` - Check current sprint progress
+- `/update-sprint-tracker US-XX DONE` - Manual tracker update
