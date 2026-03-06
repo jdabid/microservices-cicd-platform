@@ -2,7 +2,7 @@
 Auth Router
 FastAPI endpoints that use Commands and Queries (CQRS)
 """
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Request, status
 from sqlalchemy.orm import Session
 
 from app.common.dependencies.database import get_db
@@ -16,6 +16,12 @@ from app.features.auth.schemas.auth import (
 )
 from app.features.auth.commands.register_user import RegisterUserCommand
 from app.features.auth.commands.login_user import LoginUserCommand
+from app.core.config import settings
+
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+
+limiter = Limiter(key_func=get_remote_address)
 
 router = APIRouter()
 
@@ -27,7 +33,9 @@ router = APIRouter()
     summary="Register User",
     tags=["Commands"],
 )
+@limiter.limit(settings.RATE_LIMIT_AUTH)
 async def register(
+    request: Request,
     data: RegisterRequest,
     db: Session = Depends(get_db),
 ) -> UserResponse:
@@ -43,7 +51,9 @@ async def register(
     summary="Login",
     tags=["Commands"],
 )
+@limiter.limit(settings.RATE_LIMIT_AUTH)
 async def login(
+    request: Request,
     data: LoginRequest,
     db: Session = Depends(get_db),
 ) -> TokenResponse:

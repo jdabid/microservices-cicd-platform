@@ -2,10 +2,14 @@
 FastAPI Main Application
 Vertical Slice Architecture + CQRS Pattern
 """
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from prometheus_fastapi_instrumentator import Instrumentator
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 from starlette.exceptions import HTTPException
 
 from app.core.config import settings
@@ -19,6 +23,9 @@ from app.common.exceptions.handlers import (
 from app.features.appointments.router import router as appointments_router
 from app.features.auth.router import router as auth_router
 
+# Rate limiter instance
+limiter = Limiter(key_func=get_remote_address)
+
 # Create FastAPI application
 app = FastAPI(
     title=settings.APP_NAME,
@@ -29,13 +36,30 @@ app = FastAPI(
     openapi_url="/openapi.json"
 )
 
-# CORS middleware
+# Rate limiter state
+app.state.limiter = limiter
+
+
+def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded) -> JSONResponse:
+    return JSONResponse(
+        status_code=429,
+        content={"status_code": 429, "message": "Rate limit exceeded", "detail": str(exc.detail)},
+    )
+
+
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+# CORS middleware - environment-specific (no wildcards in production)
+cors_origins = settings.BACKEND_CORS_ORIGINS
+if settings.ENVIRONMENT == "production" and "*" in cors_origins:
+    cors_origins = [o for o in cors_origins if o != "*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.BACKEND_CORS_ORIGINS,
+    allow_origins=cors_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
 # Register exception handlers

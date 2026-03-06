@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     # Application
     APP_NAME: str = "Microservices CI/CD Platform API"
     DEBUG: bool = True
+    ENVIRONMENT: str = "development"
     LOG_LEVEL: str = "INFO"
     API_V1_PREFIX: str = "/api/v1"
 
@@ -40,8 +41,11 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
-    # CORS
+    # CORS - environment-specific (no wildcards in production)
     BACKEND_CORS_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:8000"]
+
+    # Rate Limiting
+    RATE_LIMIT_AUTH: str = "5/minute"
 
     # Celery
     CELERY_BROKER_URL: str = "redis://localhost:6379/1"
