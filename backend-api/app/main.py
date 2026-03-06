@@ -22,6 +22,7 @@ from app.common.exceptions.handlers import (
 )
 from app.features.appointments.router import router as appointments_router
 from app.features.auth.router import router as auth_router
+from app.features.patients.router import router as patients_router
 
 # Rate limiter instance
 limiter = Limiter(key_func=get_remote_address)
@@ -82,6 +83,11 @@ app.include_router(
     prefix=f"{settings.API_V1_PREFIX}/appointments",
     tags=["Appointments"]
 )
+app.include_router(
+    patients_router,
+    prefix=f"{settings.API_V1_PREFIX}/patients",
+    tags=["Patients"]
+)
 
 
 @app.get("/")
@@ -97,7 +103,8 @@ async def root():
         "metrics": "/metrics",
         "features": [
             "auth",
-            "appointments"
+            "appointments",
+            "patients"
         ]
     }
 
