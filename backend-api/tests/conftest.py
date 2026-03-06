@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 
 from app.common.database.base import Base
 from app.features.appointments.models.appointment import Appointment, AppointmentStatus
+from app.features.patients.models.patient import Patient  # noqa: F401 - needed for table creation
 
 # Test database URL (usar SQLite en memoria para tests)
 SQLALCHEMY_TEST_DATABASE_URL = "sqlite:///:memory:"
