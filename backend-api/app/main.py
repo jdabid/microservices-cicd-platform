@@ -17,6 +17,7 @@ from app.common.exceptions.handlers import (
     general_exception_handler,
 )
 from app.features.appointments.router import router as appointments_router
+from app.features.auth.router import router as auth_router
 
 # Create FastAPI application
 app = FastAPI(
@@ -48,6 +49,11 @@ Instrumentator().instrument(app).expose(app)
 
 # Include feature routers (Vertical Slices)
 app.include_router(
+    auth_router,
+    prefix=f"{settings.API_V1_PREFIX}/auth",
+    tags=["Auth"]
+)
+app.include_router(
     appointments_router,
     prefix=f"{settings.API_V1_PREFIX}/appointments",
     tags=["Appointments"]
@@ -66,6 +72,7 @@ async def root():
         "health": "/health",
         "metrics": "/metrics",
         "features": [
+            "auth",
             "appointments"
         ]
     }
