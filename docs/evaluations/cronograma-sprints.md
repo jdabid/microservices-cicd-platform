@@ -1,7 +1,7 @@
 # Cronograma de Sprints — Tracking en Tiempo Real
 
 > Este documento se actualiza automaticamente cada vez que se finaliza una User Story.
-> Ultima actualizacion: 2026-03-07
+> Ultima actualizacion: 2026-03-08
 
 ---
 
@@ -10,19 +10,19 @@
 | Metrica | Valor |
 |---------|-------|
 | Total User Stories | 50 |
-| Completadas | 9 |
+| Completadas | 11 |
 | En progreso | 0 |
-| Pendientes | 41 |
+| Pendientes | 39 |
 | Story Points totales | 136 |
-| Story Points completados | 21 |
-| Story Points restantes | 115 |
-| Velocidad actual | 21 SP (Sprint 1 en progreso) |
+| Story Points completados | 23 |
+| Story Points restantes | 113 |
+| Velocidad actual | 23 SP (Sprint 1 en progreso) |
 | Sprint actual | Sprint 1 EN PROGRESO |
 
 ### Progreso Global
 
 ```
-Completado: [######________________________________] 15%  (21/136 SP)
+Completado: [######________________________________] 17%  (23/136 SP)
 ```
 
 ---
@@ -32,10 +32,10 @@ Completado: [######________________________________] 15%  (21/136 SP)
 **Sprint Goal:** El repositorio esta limpio, profesional, con autenticacion JWT y manejo de errores implementados.
 **Duracion:** Semana 1-2
 **Estado:** EN PROGRESO
-**SP Completados:** 21/32
+**SP Completados:** 23/32
 
 ```
-Sprint 1: [#########################_____________] 65%  (21/32 SP)
+Sprint 1: [###########################___________] 72%  (23/32 SP)
 ```
 
 | ID | User Story | SP | Estado | Branch | PR | Fecha |
@@ -51,8 +51,8 @@ Sprint 1: [#########################_____________] 65%  (21/32 SP)
 | US-09 | CORS configurado por ambiente y rate limiting en auth | 3 | DONE | `feature/s1-US09-cors-rate-limiting` | [#13](https://github.com/jdabid/microservices-cicd-platform/pull/13) | 2026-03-07 |
 | US-10 | Configurar ruff y mypy para calidad de codigo | 3 | DONE | `feature/s1-US10-ruff-mypy` | [#11](https://github.com/jdabid/microservices-cicd-platform/pull/11) | 2026-03-07 |
 | US-11 | Reemplazar psycopg2-binary por asyncpg | 3 | DONE | `feature/s1-US11-asyncpg` | [#12](https://github.com/jdabid/microservices-cicd-platform/pull/12) | 2026-03-07 |
-| US-12 | Corregir time.sleep() en Celery tasks y datetime sin timezone | 1 | PENDIENTE | — | — | — |
-| US-13 | Corregir typos en Dockerfiles (emails en LABEL) | 1 | PENDIENTE | — | — | — |
+| US-12 | Corregir time.sleep() en Celery tasks y datetime sin timezone | 1 | DONE | `feature/s1-US12-fix-sleep-datetime` | [#14](https://github.com/jdabid/microservices-cicd-platform/pull/14) | 2026-03-08 |
+| US-13 | Corregir typos en Dockerfiles (emails en LABEL) | 1 | DONE | `feature/s1-US13-fix-dockerfile-typos` | [#15](https://github.com/jdabid/microservices-cicd-platform/pull/15) | 2026-03-08 |
 
 ### Notas del Sprint 1
 - US-01, US-02, US-03 completadas en batch (misma PR #6, eran tareas de limpieza interdependientes)
@@ -65,6 +65,8 @@ Sprint 1: [#########################_____________] 65%  (21/32 SP)
 - US-09: slowapi rate limiting + CORS por ambiente (PR #13)
 - US-10: pyproject.toml con ruff + mypy config (PR #11)
 - US-11: asyncpg reemplaza psycopg2-binary, async session factory (PR #12)
+- US-12: remove time.sleep, fix datetime.utcnow → datetime.now(timezone.utc) (PR #14)
+- US-13: fix email typos en 3 Dockerfiles (dabid→david, gmailc→gmail) (PR #15)
 
 ---
 
@@ -209,7 +211,9 @@ Restantes
       |
   125 |
       |
-  115 |   *  <- actual (9 US completadas, 21 SP)
+  115 |
+      |
+  113 |   *  <- actual (11 US completadas, 23 SP)
       |
   120 |
       |
@@ -242,3 +246,5 @@ Restantes
 | 2026-03-07 | US-10 | COMPLETADA | 3 | Agent (worktree), Write (pyproject.toml), Edit (requirements) |
 | 2026-03-07 | US-11 | COMPLETADA | 3 | Agent (worktree), Write (session.py, database.py), Edit (config, requirements) |
 | 2026-03-07 | US-09 | COMPLETADA | 3 | Edit (config, main, router, requirements), Bash (gh pr) |
+| 2026-03-08 | US-12 | COMPLETADA | 1 | Edit (email_tasks, notification_tasks, list_appointments) |
+| 2026-03-08 | US-13 | COMPLETADA | 1 | Edit (Dockerfile, Dockerfile.worker, frontend/Dockerfile) |
