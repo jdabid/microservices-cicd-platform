@@ -5,7 +5,7 @@ Handles appointment updates - modifies system state
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 
-from app.features.appointments.models.appointment import Appointment
+from app.features.appointments.models.appointment import Appointment, AppointmentStatus
 from app.features.appointments.schemas.appointment import AppointmentUpdate
 
 
@@ -81,7 +81,7 @@ class UpdateAppointmentCommand:
     ) -> None:
         """Validate business rules before updating"""
         # Cannot update cancelled appointments
-        if appointment.status == "cancelled":
+        if appointment.status == AppointmentStatus.CANCELLED:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Cannot update a cancelled appointment"
