@@ -5,7 +5,7 @@ Retrieves multiple appointments with filtering and pagination - read-only
 from typing import Optional
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, and_
-from datetime import datetime
+from datetime import datetime, timezone
 from math import ceil
 
 from app.features.appointments.models.appointment import Appointment, AppointmentStatus
@@ -134,7 +134,7 @@ class GetUpcomingAppointmentsQuery:
         """
         from datetime import timedelta
 
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
         future_date = now + timedelta(days=days_ahead)
 
         appointments = self.db.query(Appointment).filter(
