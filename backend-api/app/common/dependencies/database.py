@@ -1,26 +1,23 @@
 """
 Database Dependencies for FastAPI
 """
-from typing import Generator
-from sqlalchemy.orm import Session
+from typing import AsyncGenerator
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.common.database.session import SessionLocal
+from app.common.database.session import AsyncSessionLocal
 
 
-def get_db() -> Generator[Session, None, None]:
+async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """
-    Dependency function to get database session
+    Dependency function to get async database session
 
     Usage in endpoints:
         @router.get("/items")
-        def get_items(db: Session = Depends(get_db)):
+        async def get_items(db: AsyncSession = Depends(get_db)):
             ...
 
     Yields:
-        Database session
+        Async database session
     """
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+    async with AsyncSessionLocal() as session:
+        yield session

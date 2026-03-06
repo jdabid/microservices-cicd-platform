@@ -22,6 +22,14 @@ class Settings(BaseSettings):
     # Database
     DATABASE_URL: str = "postgresql://postgres:postgres@localhost:5432/appointments_db"
 
+    @property
+    def ASYNC_DATABASE_URL(self) -> str:
+        """Convert DATABASE_URL to use the asyncpg driver."""
+        url = self.DATABASE_URL
+        if url.startswith("postgresql://"):
+            return url.replace("postgresql://", "postgresql+asyncpg://", 1)
+        return url
+
     # Redis
     REDIS_HOST: str = "localhost"
     REDIS_PORT: int = 6379
