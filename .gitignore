@@ -53,7 +53,6 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-package-lock.json
 .npm
 .yarn/
 
@@ -69,7 +68,6 @@ package-lock.json
 *.swp
 *.swo
 *~
-.DS_Store
 *.sublime-project
 *.sublime-workspace
 .history/
@@ -80,7 +78,6 @@ package-lock.json
 .env
 .env.local
 .env.*.local
-*.env
 !.env.example
 
 # ============================================
@@ -125,8 +122,6 @@ data/
 # ============================================
 .DS_Store
 Thumbs.db
-*.swp
-*.bak
 
 # ============================================
 # SECRETS (NUNCA SUBIR)
@@ -153,21 +148,20 @@ tmp/
 temp/
 *.tmp
 *.temp
+*.backup
+*.corrupted
+*.bak
 
 # ============================================
 # ALEMBIC
 # ============================================
 alembic.ini.local
 
-Cronograma
-PROGRESS.md
+# ============================================
+# PROJECT SPECIFIC (not for repo)
+# ============================================
+respuestas-ia/
+schedule/
 docs/learnings/
-docs/verification
-# Environment variables
-.env
-.env.local
-.env.*.local
-
-# Data directories
-data/
-logs/
+docs/verification/
+main.py
