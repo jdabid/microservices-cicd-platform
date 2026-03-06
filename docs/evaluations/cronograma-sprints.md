@@ -10,19 +10,19 @@
 | Metrica | Valor |
 |---------|-------|
 | Total User Stories | 50 |
-| Completadas | 3 |
-| En progreso | 2 |
+| Completadas | 5 |
+| En progreso | 0 |
 | Pendientes | 45 |
 | Story Points totales | 136 |
-| Story Points completados | 3 |
-| Story Points restantes | 133 |
-| Velocidad actual | — |
+| Story Points completados | 11 |
+| Story Points restantes | 125 |
+| Velocidad actual | 11 SP (Sprint 1 en progreso) |
 | Sprint actual | Sprint 1 EN PROGRESO |
 
 ### Progreso Global
 
 ```
-Completado: [#_____________________________________] 2%  (3/136 SP)
+Completado: [###___________________________________] 8%  (11/136 SP)
 ```
 
 ---
@@ -32,10 +32,10 @@ Completado: [#_____________________________________] 2%  (3/136 SP)
 **Sprint Goal:** El repositorio esta limpio, profesional, con autenticacion JWT y manejo de errores implementados.
 **Duracion:** Semana 1-2
 **Estado:** EN PROGRESO
-**SP Completados:** 3/32
+**SP Completados:** 11/32
 
 ```
-Sprint 1: [###___________________________________] 9%  (3/32 SP)
+Sprint 1: [#############_________________________] 34%  (11/32 SP)
 ```
 
 | ID | User Story | SP | Estado | Branch | PR | Fecha |
@@ -43,8 +43,8 @@ Sprint 1: [###___________________________________] 9%  (3/32 SP)
 | US-01 | Actualizar .gitignore y limpiar archivos del tracking | 1 | DONE | `feature/s1-US01-US02-US03-repo-cleanup` | [#6](https://github.com/jdabid/microservices-cicd-platform/pull/6) | 2026-03-06 |
 | US-02 | Eliminar .env del repositorio, verificar .env.example | 1 | DONE | `feature/s1-US01-US02-US03-repo-cleanup` | [#6](https://github.com/jdabid/microservices-cicd-platform/pull/6) | 2026-03-06 |
 | US-03 | Eliminar archivos innecesarios (.backup, .corrupted, main.py raiz) | 1 | DONE | `feature/s1-US01-US02-US03-repo-cleanup` | [#6](https://github.com/jdabid/microservices-cicd-platform/pull/6) | 2026-03-06 |
-| US-04 | Login y JWT para acceder a la API de forma segura | 5 | EN PROGRESO | `feature/s1-US04-jwt-auth` | — | — |
-| US-05 | Sistema de excepciones centralizado | 3 | EN PROGRESO | `feature/s1-US05-exception-handling` | — | — |
+| US-04 | Login y JWT para acceder a la API de forma segura | 5 | DONE | `feature/s1-US04-jwt-auth` | [#9](https://github.com/jdabid/microservices-cicd-platform/pull/9) | 2026-03-06 |
+| US-05 | Sistema de excepciones centralizado | 3 | DONE | `feature/s1-US05-exception-handling` | [#8](https://github.com/jdabid/microservices-cicd-platform/pull/8) | 2026-03-06 |
 | US-06 | Completar feature patients/ con CRUD completo (CQRS) | 5 | PENDIENTE | — | — | — |
 | US-07 | Tests unitarios para patients/ (minimo 8 tests) | 3 | PENDIENTE | — | — | — |
 | US-08 | Corregir strings hardcodeados por enums en update_appointment.py | 1 | PENDIENTE | — | — | — |
@@ -57,6 +57,9 @@ Sprint 1: [###___________________________________] 9%  (3/32 SP)
 ### Notas del Sprint 1
 - US-01, US-02, US-03 completadas en batch (misma PR #6, eran tareas de limpieza interdependientes)
 - US-04 y US-05 lanzadas en paralelo con Agents en worktree isolation
+- US-05 completada primero (PR #8), US-04 despues (PR #9) - cherry-pick desde worktree
+- US-04 creo 17 archivos (676 lineas): auth feature completo con CQRS + 15 tests
+- US-05 creo 6 archivos (535 lineas): exception hierarchy + handlers + 30 tests
 
 ---
 
@@ -199,7 +202,7 @@ Story Points
 Restantes
   136 |
       |
-  133 |*  <- actual (Sprint 1 en progreso)
+  125 |   *  <- actual (5 US completadas, 11 SP)
       |
   120 |
       |
@@ -226,3 +229,5 @@ Restantes
 | 2026-03-06 | US-01 | COMPLETADA | 1 | Bash (git rm --cached), Write (.gitignore) |
 | 2026-03-06 | US-02 | COMPLETADA | 1 | Bash (git rm --cached), Read (.env verification) |
 | 2026-03-06 | US-03 | COMPLETADA | 1 | Bash (git rm --cached main.py, *.backup, *.corrupted) |
+| 2026-03-06 | US-05 | COMPLETADA | 3 | Agent (worktree isolation), Bash (cherry-pick, gh pr) |
+| 2026-03-06 | US-04 | COMPLETADA | 5 | Agent (worktree isolation), Bash (cherry-pick, gh pr) |
