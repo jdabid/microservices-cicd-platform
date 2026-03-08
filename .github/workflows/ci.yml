@@ -122,6 +122,25 @@ jobs:
           path: backend-api/bandit-report.json
           retention-days: 14
 
+  helm-lint:
+    name: Helm Chart Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+
+      - name: Lint Helm chart
+        run: helm lint helm/microservices-platform/
+
+      - name: Template with default values
+        run: helm template test helm/microservices-platform/
+
+      - name: Template with prod values
+        run: helm template test helm/microservices-platform/ -f helm/microservices-platform/values-prod.yaml
+
   container-scan:
     name: Container Security Scan (Trivy)
     runs-on: ubuntu-latest
