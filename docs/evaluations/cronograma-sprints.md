@@ -10,19 +10,19 @@
 | Metrica | Valor |
 |---------|-------|
 | Total User Stories | 50 |
-| Completadas | 35 |
+| Completadas | 42 |
 | En progreso | 0 |
-| Pendientes | 15 |
+| Pendientes | 8 |
 | Story Points totales | 136 |
-| Story Points completados | 95 |
-| Story Points restantes | 41 |
-| Velocidad actual | 31 SP (S1), 21 SP (S2), 21 SP (S3), 22 SP (S4) |
-| Sprint actual | Sprint 4 COMPLETADO |
+| Story Points completados | 115 |
+| Story Points restantes | 21 |
+| Velocidad actual | 31 SP (S1), 21 SP (S2), 21 SP (S3), 22 SP (S4), 20 SP (S5) |
+| Sprint actual | Sprint 5 COMPLETADO |
 
 ### Progreso Global
 
 ```
-Completado: [############################__________] 70%  (95/136 SP)
+Completado: [##################################____] 85%  (115/136 SP)
 ```
 
 ---
@@ -183,25 +183,37 @@ Sprint 4: [######################################] 100%  (22/22 SP)
 
 **Sprint Goal:** Seguridad reforzada en CI/CD, Kubernetes y configuracion de red.
 **Duracion:** Semana 9-10
-**Estado:** NO INICIADO
-**SP Completados:** 0/20
+**Estado:** COMPLETADO
+**SP Completados:** 20/20
 
 ```
-Sprint 5: [______________________________________] 0%  (0/20 SP)
+Sprint 5: [######################################] 100%  (20/20 SP)
 ```
 
 | ID | User Story | SP | Estado | Branch | PR | Fecha |
 |----|------------|----|---------|---------|----|-------|
-| US-36 | Trivy container scanning en CI/CD pipeline | 3 | PENDIENTE | — | — | — |
-| US-37 | SecurityContext en todos los pods K8s | 3 | PENDIENTE | — | — | — |
-| US-38 | Network Policies para aislar trafico entre servicios | 5 | PENDIENTE | — | — | — |
-| US-39 | TLS en Ingress con cert-manager y Let's Encrypt | 3 | PENDIENTE | — | — | — |
-| US-40 | RBAC con ServiceAccount, Role y RoleBinding | 2 | PENDIENTE | — | — | — |
-| US-41 | PodDisruptionBudget para servicios criticos | 2 | PENDIENTE | — | — | — |
-| US-42 | Sealed Secrets o External Secrets para credenciales | 2 | PENDIENTE | — | — | — |
+| US-36 | Trivy container scanning en CI/CD pipeline | 3 | DONE | `feature/s5-US36-to-US42-security` | [#23](https://github.com/jdabid/microservices-cicd-platform/pull/23) | 2026-03-10 |
+| US-37 | SecurityContext en todos los pods K8s | 3 | DONE | `feature/s5-US36-to-US42-security` | [#23](https://github.com/jdabid/microservices-cicd-platform/pull/23) | 2026-03-10 |
+| US-38 | Network Policies para aislar trafico entre servicios | 5 | DONE | `feature/s5-US36-to-US42-security` | [#23](https://github.com/jdabid/microservices-cicd-platform/pull/23) | 2026-03-10 |
+| US-39 | TLS en Ingress con cert-manager y Let's Encrypt | 3 | DONE | `feature/s5-US36-to-US42-security` | [#23](https://github.com/jdabid/microservices-cicd-platform/pull/23) | 2026-03-10 |
+| US-40 | RBAC con ServiceAccount, Role y RoleBinding | 2 | DONE | `feature/s5-US36-to-US42-security` | [#23](https://github.com/jdabid/microservices-cicd-platform/pull/23) | 2026-03-10 |
+| US-41 | PodDisruptionBudget para servicios criticos | 2 | DONE | `feature/s5-US36-to-US42-security` | [#23](https://github.com/jdabid/microservices-cicd-platform/pull/23) | 2026-03-10 |
+| US-42 | Sealed Secrets o External Secrets para credenciales | 2 | DONE | `feature/s5-US36-to-US42-security` | [#23](https://github.com/jdabid/microservices-cicd-platform/pull/23) | 2026-03-10 |
 
 ### Notas del Sprint 5
-_(sin notas aun)_
+- Sprint completo en una sola PR #23 (7 US batch)
+- 3 Agents en worktree isolation ejecutados en paralelo:
+  - Agent 1: US-36 (Trivy CI) — worktree auto-limpiado pero cambios persistieron en archivo
+  - Agent 2: US-37 + US-40 + US-41 (SecurityContext + RBAC + PDB) — 10 archivos
+  - Agent 3: US-38 + US-39 + US-42 (NetworkPolicies + TLS + Secrets) — 5 archivos
+- 19 archivos, 1,366 lineas
+- Trivy: matrix strategy (backend-api + worker), SARIF upload, fail on HIGH/CRITICAL
+- SecurityContext: runAsNonRoot, drop ALL, readOnlyRootFilesystem en todos los pods
+- NetworkPolicies: 7 policies zero-trust (default-deny + allow explicito por servicio)
+- TLS: cert-manager con Let's Encrypt staging + prod, Ingress con SSL redirect
+- RBAC: ServiceAccount por servicio, ClusterRole para Prometheus
+- PDB: minAvailable 1 para 6 servicios criticos
+- Secrets: Sealed Secrets + External Secrets (AWS Secrets Manager) como alternativas
 
 ---
 
@@ -253,7 +265,10 @@ Restantes
    63 |                          *  <- fin Sprint 3 (28 US, 73 SP)
       |                            \
       |                              \
-   41 |                                *  <- actual (35 US completadas, 95 SP, Sprint 4 DONE)
+   41 |                                *  <- fin Sprint 4 (35 US, 95 SP)
+      |                                  \
+      |                                    \
+   21 |                                      *  <- actual (42 US, 115 SP, Sprint 5 DONE)
       |
    83 |
       |
@@ -308,3 +323,10 @@ Restantes
 | 2026-03-10 | US-33 | COMPLETADA | 3 | Write (alert_rules.yml, alertmanager.yml), 8 reglas |
 | 2026-03-10 | US-34 | COMPLETADA | 3 | Write (logging.py, middleware.py), Edit (main.py) |
 | 2026-03-10 | US-35 | COMPLETADA | 2 | Write (5 K8s manifests monitoring namespace) |
+| 2026-03-10 | US-36 | COMPLETADA | 3 | Edit (ci.yml), Trivy matrix scan + SARIF |
+| 2026-03-10 | US-37 | COMPLETADA | 3 | Edit (deployments), Write (app deployments), securityContext |
+| 2026-03-10 | US-38 | COMPLETADA | 5 | Write (network-policies.yml), 7 NetworkPolicies zero-trust |
+| 2026-03-10 | US-39 | COMPLETADA | 3 | Write (cert-manager.yml, ingress.yml), TLS + Let's Encrypt |
+| 2026-03-10 | US-40 | COMPLETADA | 2 | Write (rbac.yml x2), ServiceAccounts + Roles |
+| 2026-03-10 | US-41 | COMPLETADA | 2 | Write (pod-disruption-budgets.yml x2), PDB minAvailable 1 |
+| 2026-03-10 | US-42 | COMPLETADA | 2 | Write (sealed-secrets.yml, external-secrets.yml) |
