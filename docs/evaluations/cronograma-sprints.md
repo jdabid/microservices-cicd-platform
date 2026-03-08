@@ -10,19 +10,19 @@
 | Metrica | Valor |
 |---------|-------|
 | Total User Stories | 50 |
-| Completadas | 42 |
+| Completadas | 49 |
 | En progreso | 0 |
-| Pendientes | 8 |
+| Pendientes | 1 (US-50 video demo) |
 | Story Points totales | 136 |
-| Story Points completados | 115 |
-| Story Points restantes | 21 |
-| Velocidad actual | 31 SP (S1), 21 SP (S2), 21 SP (S3), 22 SP (S4), 20 SP (S5) |
-| Sprint actual | Sprint 5 COMPLETADO |
+| Story Points completados | 135 |
+| Story Points restantes | 1 |
+| Velocidad actual | 31 SP (S1), 21 SP (S2), 21 SP (S3), 22 SP (S4), 20 SP (S5), 20 SP (S6) |
+| Sprint actual | Sprint 6 COMPLETADO |
 
 ### Progreso Global
 
 ```
-Completado: [##################################____] 85%  (115/136 SP)
+Completado: [#####################################_] 99%  (135/136 SP)
 ```
 
 ---
@@ -221,26 +221,39 @@ Sprint 5: [######################################] 100%  (20/20 SP)
 
 **Sprint Goal:** Proyecto listo para portafolio con Helm, GitOps, documentacion profesional y deploy publico.
 **Duracion:** Semana 11-12
-**Estado:** NO INICIADO
-**SP Completados:** 0/20
+**Estado:** COMPLETADO
+**SP Completados:** 19/20
 
 ```
-Sprint 6: [______________________________________] 0%  (0/20 SP)
+Sprint 6: [####################################__] 95%  (19/20 SP)
 ```
 
 | ID | User Story | SP | Estado | Branch | PR | Fecha |
 |----|------------|----|---------|---------|----|-------|
-| US-43 | Helm chart para la aplicacion completa | 5 | PENDIENTE | — | — | — |
-| US-44 | ArgoCD Application manifest para deployment automatico | 3 | PENDIENTE | — | — | — |
-| US-45 | CD workflow en GitHub Actions (staging auto, prod con aprobacion) | 3 | PENDIENTE | — | — | — |
-| US-46 | README.md actualizado con badges reales | 3 | PENDIENTE | — | — | — |
-| US-47 | 3 ADRs (CQRS, Terraform, stack de monitoreo) | 2 | PENDIENTE | — | — | — |
-| US-48 | docs/ARCHITECTURE.md con diagramas actualizados | 2 | PENDIENTE | — | — | — |
-| US-49 | Revision final: tests, coverage, CI verde, repo limpio | 1 | PENDIENTE | — | — | — |
+| US-43 | Helm chart para la aplicacion completa | 5 | DONE | `feature/s6-US43-to-US50-gitops-helm-docs` | [#24](https://github.com/jdabid/microservices-cicd-platform/pull/24) | 2026-03-10 |
+| US-44 | ArgoCD Application manifest para deployment automatico | 3 | DONE | `feature/s6-US43-to-US50-gitops-helm-docs` | [#24](https://github.com/jdabid/microservices-cicd-platform/pull/24) | 2026-03-10 |
+| US-45 | CD workflow en GitHub Actions (staging auto, prod con aprobacion) | 3 | DONE | `feature/s6-US43-to-US50-gitops-helm-docs` | [#24](https://github.com/jdabid/microservices-cicd-platform/pull/24) | 2026-03-10 |
+| US-46 | README.md actualizado con badges reales | 3 | DONE | `feature/s6-US43-to-US50-gitops-helm-docs` | [#24](https://github.com/jdabid/microservices-cicd-platform/pull/24) | 2026-03-10 |
+| US-47 | 3 ADRs (CQRS, Terraform, stack de monitoreo) | 2 | DONE | `feature/s6-US43-to-US50-gitops-helm-docs` | [#24](https://github.com/jdabid/microservices-cicd-platform/pull/24) | 2026-03-10 |
+| US-48 | docs/ARCHITECTURE.md con diagramas actualizados | 2 | DONE | `feature/s6-US43-to-US50-gitops-helm-docs` | [#24](https://github.com/jdabid/microservices-cicd-platform/pull/24) | 2026-03-10 |
+| US-49 | Revision final: tests, coverage, CI verde, repo limpio | 1 | DONE | main | — | 2026-03-10 |
 | US-50 | Video demo para LinkedIn | 1 | PENDIENTE | — | — | — |
 
 ### Notas del Sprint 6
-_(sin notas aun)_
+- US-43 a US-48 completadas en una sola PR #24 (6 US batch)
+- 3 Agents en worktree isolation ejecutados en paralelo:
+  - Agent 1: US-43 + US-44 (Helm chart 19 templates + ArgoCD) — 21 archivos
+  - Agent 2: US-45 + US-46 (CD pipeline + README profesional) — 2 archivos
+  - Agent 3: US-47 + US-48 (3 ADRs + ARCHITECTURE.md) — 4 archivos
+- 28 archivos, 2,197 lineas
+- Helm: chart completo con 5 servicios, HPA, network policies, ingress TLS, values dev/prod
+- ArgoCD: Application con automated sync + self-heal, Project con namespace scoping
+- CD: build+push GHCR, staging auto, production con manual approval
+- README: 9 badges, diagrama arquitectura, 16 features implementadas, portfolio-ready
+- ADRs: CQRS, Terraform modules, monitoring stack — formato estandar
+- ARCHITECTURE.md: 8 secciones con diagramas ASCII (sistema, app, infra, CI/CD, monitoreo, seguridad)
+- US-49: revision final — repo limpio, sin archivos sensibles, CI/coverage configurados
+- US-50: video demo LinkedIn — pendiente, requiere accion humana (grabar 3-5 min demo)
 
 ---
 
@@ -268,7 +281,10 @@ Restantes
    41 |                                *  <- fin Sprint 4 (35 US, 95 SP)
       |                                  \
       |                                    \
-   21 |                                      *  <- actual (42 US, 115 SP, Sprint 5 DONE)
+   21 |                                      *  <- fin Sprint 5 (42 US, 115 SP)
+      |                                        \
+      |                                          \
+    1 |                                            *  <- FINAL (49 US, 135 SP, Sprint 6 DONE)
       |
    83 |
       |
@@ -330,3 +346,10 @@ Restantes
 | 2026-03-10 | US-40 | COMPLETADA | 2 | Write (rbac.yml x2), ServiceAccounts + Roles |
 | 2026-03-10 | US-41 | COMPLETADA | 2 | Write (pod-disruption-budgets.yml x2), PDB minAvailable 1 |
 | 2026-03-10 | US-42 | COMPLETADA | 2 | Write (sealed-secrets.yml, external-secrets.yml) |
+| 2026-03-10 | US-43 | COMPLETADA | 5 | Write (19 Helm templates + Chart.yaml + values) |
+| 2026-03-10 | US-44 | COMPLETADA | 3 | Write (argocd/application.yaml, project.yaml) |
+| 2026-03-10 | US-45 | COMPLETADA | 3 | Write (.github/workflows/cd.yml), staging + prod |
+| 2026-03-10 | US-46 | COMPLETADA | 3 | Write (README.md), 9 badges, portfolio-ready |
+| 2026-03-10 | US-47 | COMPLETADA | 2 | Write (3 ADRs: CQRS, Terraform, monitoring) |
+| 2026-03-10 | US-48 | COMPLETADA | 2 | Write (docs/ARCHITECTURE.md), 8 secciones + diagramas |
+| 2026-03-10 | US-49 | COMPLETADA | 1 | Revision final: repo limpio, CI ok, no secrets |
