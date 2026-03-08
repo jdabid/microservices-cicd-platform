@@ -1,0 +1,110 @@
+global:
+  namespace: microservices-cicd-platform
+  environment: dev
+
+backendApi:
+  replicaCount: 2
+  image:
+    repository: jdabid/backend-api
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    port: 8000
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilization: 70
+
+backendWorker:
+  replicaCount: 1
+  image:
+    repository: jdabid/backend-worker
+    tag: latest
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
+
+postgres:
+  enabled: true
+  image:
+    repository: postgres
+    tag: "15"
+  service:
+    port: 5432
+  storage:
+    size: 10Gi
+    storageClass: ""
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+redis:
+  enabled: true
+  image:
+    repository: redis
+    tag: "7-alpine"
+  service:
+    port: 6379
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+
+frontend:
+  replicaCount: 1
+  image:
+    repository: jdabid/frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    port: 80
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: api.microservices-cicd.example.com
+      paths:
+        - path: /
+          service: backend-api
+    - host: app.microservices-cicd.example.com
+      paths:
+        - path: /
+          service: frontend
+  tls:
+    - secretName: microservices-tls
+      hosts:
+        - api.microservices-cicd.example.com
+        - app.microservices-cicd.example.com
+
+networkPolicy:
+  enabled: true
