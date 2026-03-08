@@ -1,0 +1,124 @@
+name: CD Pipeline
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  BACKEND_IMAGE: ghcr.io/jdabid/backend-api
+  WORKER_IMAGE: ghcr.io/jdabid/backend-worker
+  FRONTEND_IMAGE: ghcr.io/jdabid/frontend
+
+jobs:
+  build-and-push:
+    name: Build & Push Docker Images
+    runs-on: ubuntu-latest
+    outputs:
+      image-tag: ${{ steps.meta.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.BACKEND_IMAGE }}
+          tags: |
+            type=sha,prefix=
+            type=semver,pattern={{version}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push backend-api
+        uses: docker/build-push-action@v5
+        with:
+          context: backend-api
+          file: backend-api/Dockerfile
+          push: true
+          tags: |
+            ${{ env.BACKEND_IMAGE }}:${{ github.sha }}
+            ${{ env.BACKEND_IMAGE }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push backend-worker
+        uses: docker/build-push-action@v5
+        with:
+          context: backend-api
+          file: backend-api/Dockerfile.worker
+          push: true
+          tags: |
+            ${{ env.WORKER_IMAGE }}:${{ github.sha }}
+            ${{ env.WORKER_IMAGE }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: frontend
+          file: frontend/Dockerfile
+          push: true
+          tags: |
+            ${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
+            ${{ env.FRONTEND_IMAGE }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy-staging:
+    name: Deploy to Staging
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update Helm values with new image tag
+        run: |
+          echo "Deploying to staging with tag: ${{ github.sha }}"
+          echo "In a real setup, this would:"
+          echo "  1. Update image tags in values-staging.yaml"
+          echo "  2. Commit to a GitOps repo or trigger ArgoCD sync"
+          echo "  3. Wait for rollout to complete"
+
+      - name: Verify staging deployment
+        run: |
+          echo "Staging deployment verification:"
+          echo "  - Health check: OK (simulated)"
+          echo "  - Smoke tests: OK (simulated)"
+
+  deploy-production:
+    name: Deploy to Production
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to production
+        run: |
+          echo "Deploying to production with tag: ${{ github.sha }}"
+          echo "In a real setup, this would:"
+          echo "  1. Update image tags in values-prod.yaml"
+          echo "  2. Create a GitHub release"
+          echo "  3. Trigger ArgoCD sync for production"
+          echo "  4. Wait for rollout and run smoke tests"
+
+      - name: Post-deployment verification
+        run: |
+          echo "Production deployment verification:"
+          echo "  - Health check: OK (simulated)"
+          echo "  - Smoke tests: OK (simulated)"
+          echo "  - Rollback plan: Ready"

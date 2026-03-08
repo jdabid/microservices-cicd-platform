@@ -1,0 +1,40 @@
+Microservices Platform has been deployed successfully!
+
+Environment: {{ .Values.global.environment }}
+Namespace: {{ include "microservices-platform.namespace" . }}
+
+Components deployed:
+  - Backend API ({{ .Values.backendApi.image.repository }}:{{ .Values.backendApi.image.tag }})
+  - Backend Worker ({{ .Values.backendWorker.image.repository }}:{{ .Values.backendWorker.image.tag }})
+{{- if .Values.postgres.enabled }}
+  - PostgreSQL ({{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }})
+{{- end }}
+{{- if .Values.redis.enabled }}
+  - Redis ({{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }})
+{{- end }}
+  - Frontend ({{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }})
+
+{{- if .Values.ingress.enabled }}
+
+Ingress is enabled. Access the application at:
+{{- range .Values.ingress.hosts }}
+  - http{{ if $.Values.ingress.tls }}s{{ end }}://{{ .host }}
+{{- end }}
+{{- else }}
+
+To access the application, use port-forwarding:
+
+  Backend API:
+    kubectl port-forward svc/{{ include "microservices-platform.fullname" . }}-backend-api {{ .Values.backendApi.service.port }}:{{ .Values.backendApi.service.port }} -n {{ include "microservices-platform.namespace" . }}
+
+  Frontend:
+    kubectl port-forward svc/{{ include "microservices-platform.fullname" . }}-frontend {{ .Values.frontend.service.port }}:{{ .Values.frontend.service.port }} -n {{ include "microservices-platform.namespace" . }}
+{{- end }}
+
+{{- if .Values.backendApi.autoscaling.enabled }}
+
+Autoscaling is enabled for Backend API:
+  Min replicas: {{ .Values.backendApi.autoscaling.minReplicas }}
+  Max replicas: {{ .Values.backendApi.autoscaling.maxReplicas }}
+  Target CPU: {{ .Values.backendApi.autoscaling.targetCPUUtilization }}%
+{{- end }}
