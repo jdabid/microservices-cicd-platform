@@ -10,19 +10,19 @@
 | Metrica | Valor |
 |---------|-------|
 | Total User Stories | 50 |
-| Completadas | 28 |
+| Completadas | 35 |
 | En progreso | 0 |
-| Pendientes | 22 |
+| Pendientes | 15 |
 | Story Points totales | 136 |
-| Story Points completados | 73 |
-| Story Points restantes | 63 |
-| Velocidad actual | 31 SP (S1), 21 SP (S2), 21 SP (S3) |
-| Sprint actual | Sprint 3 COMPLETADO |
+| Story Points completados | 95 |
+| Story Points restantes | 41 |
+| Velocidad actual | 31 SP (S1), 21 SP (S2), 21 SP (S3), 22 SP (S4) |
+| Sprint actual | Sprint 4 COMPLETADO |
 
 ### Progreso Global
 
 ```
-Completado: [######################________________] 54%  (73/136 SP)
+Completado: [############################__________] 70%  (95/136 SP)
 ```
 
 ---
@@ -147,25 +147,35 @@ Sprint 3: [######################################] 100%  (21/21 SP)
 
 **Sprint Goal:** Monitoreo funcional con Prometheus, Grafana, logging estructurado y alertas basicas.
 **Duracion:** Semana 7-8
-**Estado:** NO INICIADO
-**SP Completados:** 0/22
+**Estado:** COMPLETADO
+**SP Completados:** 22/22
 
 ```
-Sprint 4: [______________________________________] 0%  (0/22 SP)
+Sprint 4: [######################################] 100%  (22/22 SP)
 ```
 
 | ID | User Story | SP | Estado | Branch | PR | Fecha |
 |----|------------|----|---------|---------|----|-------|
-| US-29 | Configuracion Prometheus con scrape configs | 3 | PENDIENTE | — | — | — |
-| US-30 | Docker-compose para stack de monitoreo | 3 | PENDIENTE | — | — | — |
-| US-31 | Dashboard Grafana para backend-api (request rate, latency, errors) | 5 | PENDIENTE | — | — | — |
-| US-32 | Dashboard Grafana para infraestructura (CPU, memoria, disco) | 3 | PENDIENTE | — | — | — |
-| US-33 | Alertmanager con reglas basicas | 3 | PENDIENTE | — | — | — |
-| US-34 | Structured logging con python-json-logger y correlation IDs | 3 | PENDIENTE | — | — | — |
-| US-35 | Manifiestos K8s para Prometheus y Grafana | 2 | PENDIENTE | — | — | — |
+| US-29 | Configuracion Prometheus con scrape configs | 3 | DONE | `feature/s4-US29-to-US35-monitoring` | [#22](https://github.com/jdabid/microservices-cicd-platform/pull/22) | 2026-03-10 |
+| US-30 | Docker-compose para stack de monitoreo | 3 | DONE | `feature/s4-US29-to-US35-monitoring` | [#22](https://github.com/jdabid/microservices-cicd-platform/pull/22) | 2026-03-10 |
+| US-31 | Dashboard Grafana para backend-api (request rate, latency, errors) | 5 | DONE | `feature/s4-US29-to-US35-monitoring` | [#22](https://github.com/jdabid/microservices-cicd-platform/pull/22) | 2026-03-10 |
+| US-32 | Dashboard Grafana para infraestructura (CPU, memoria, disco) | 3 | DONE | `feature/s4-US29-to-US35-monitoring` | [#22](https://github.com/jdabid/microservices-cicd-platform/pull/22) | 2026-03-10 |
+| US-33 | Alertmanager con reglas basicas | 3 | DONE | `feature/s4-US29-to-US35-monitoring` | [#22](https://github.com/jdabid/microservices-cicd-platform/pull/22) | 2026-03-10 |
+| US-34 | Structured logging con python-json-logger y correlation IDs | 3 | DONE | `feature/s4-US29-to-US35-monitoring` | [#22](https://github.com/jdabid/microservices-cicd-platform/pull/22) | 2026-03-10 |
+| US-35 | Manifiestos K8s para Prometheus y Grafana | 2 | DONE | `feature/s4-US29-to-US35-monitoring` | [#22](https://github.com/jdabid/microservices-cicd-platform/pull/22) | 2026-03-10 |
 
 ### Notas del Sprint 4
-_(sin notas aun)_
+- Sprint completo en una sola PR #22 (7 US batch)
+- 3 Agents en worktree isolation ejecutados en paralelo:
+  - Agent 1: US-29 + US-30 + US-33 (Prometheus + docker-compose + Alertmanager) — 4 archivos
+  - Agent 2: US-31 + US-32 + US-35 (Grafana dashboards + K8s manifests) — 9 archivos
+  - Agent 3: US-34 (Structured logging + correlation IDs) — 2 nuevos + 1 modificado
+- 16 archivos, 1,557 lineas
+- Prometheus: scrape configs para backend-api, node, redis, postgres con 10s/15s intervals
+- Grafana: 2 dashboards JSON (backend-api 6 paneles, infra 7 paneles) + provisioning automatico
+- Alertmanager: 8 reglas (error rate >5%, latency >2s, service down, CPU >80%, memory >85%, disk <15%, PG/Redis down)
+- Logging: JSON estructurado con correlation IDs via X-Correlation-ID header
+- K8s: namespace monitoring + deployments con securityContext, probes, resource limits
 
 ---
 
@@ -240,7 +250,10 @@ Restantes
    84 |                    *  <- fin Sprint 2 (21 US, 52 SP)
       |                      \
       |                        \
-   63 |                          *  <- actual (28 US completadas, 73 SP, Sprint 3 DONE)
+   63 |                          *  <- fin Sprint 3 (28 US, 73 SP)
+      |                            \
+      |                              \
+   41 |                                *  <- actual (35 US completadas, 95 SP, Sprint 4 DONE)
       |
    83 |
       |
@@ -288,3 +301,10 @@ Restantes
 | 2026-03-10 | US-26 | COMPLETADA | 3 | Write (modules/elasticache/*), Redis 7 + subnet group |
 | 2026-03-10 | US-27 | COMPLETADA | 1 | Write (environments/dev.tfvars, prod.tfvars) |
 | 2026-03-10 | US-28 | COMPLETADA | 1 | Write (terraform/README.md), ASCII network diagram |
+| 2026-03-10 | US-29 | COMPLETADA | 3 | Write (prometheus/prometheus.yml), 5 scrape configs |
+| 2026-03-10 | US-30 | COMPLETADA | 3 | Write (docker-compose.monitoring.yml), 6 servicios |
+| 2026-03-10 | US-31 | COMPLETADA | 5 | Write (backend-api.json), 6 paneles Grafana |
+| 2026-03-10 | US-32 | COMPLETADA | 3 | Write (infrastructure.json), 7 paneles Grafana |
+| 2026-03-10 | US-33 | COMPLETADA | 3 | Write (alert_rules.yml, alertmanager.yml), 8 reglas |
+| 2026-03-10 | US-34 | COMPLETADA | 3 | Write (logging.py, middleware.py), Edit (main.py) |
+| 2026-03-10 | US-35 | COMPLETADA | 2 | Write (5 K8s manifests monitoring namespace) |
