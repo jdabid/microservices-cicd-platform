@@ -9,6 +9,7 @@ on:
 permissions:
   contents: read
   pull-requests: write
+  security-events: write
 
 jobs:
   lint:
@@ -119,4 +120,63 @@ jobs:
         with:
           name: bandit-report
           path: backend-api/bandit-report.json
+          retention-days: 14
+
+  container-scan:
+    name: Container Security Scan (Trivy)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image-name: backend-api
+            dockerfile: backend-api/Dockerfile
+            context: backend-api
+          - image-name: backend-worker
+            dockerfile: backend-api/Dockerfile.worker
+            context: backend-api
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ matrix.image-name }}:${{ github.sha }} \
+            -f ${{ matrix.dockerfile }} \
+            ${{ matrix.context }}
+
+      - name: Run Trivy vulnerability scanner (table)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ matrix.image-name }}:${{ github.sha }}
+          format: table
+          exit-code: "1"
+          severity: HIGH,CRITICAL
+          output: trivy-${{ matrix.image-name }}-table.txt
+
+      - name: Run Trivy vulnerability scanner (SARIF)
+        if: always()
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ matrix.image-name }}:${{ github.sha }}
+          format: sarif
+          exit-code: "0"
+          severity: HIGH,CRITICAL
+          output: trivy-${{ matrix.image-name }}.sarif
+
+      - name: Upload Trivy SARIF to GitHub Security tab
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-${{ matrix.image-name }}.sarif
+          category: trivy-${{ matrix.image-name }}
+
+      - name: Upload Trivy scan results as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-report-${{ matrix.image-name }}
+          path: |
+            trivy-${{ matrix.image-name }}-table.txt
+            trivy-${{ matrix.image-name }}.sarif
           retention-days: 14

@@ -1,0 +1,65 @@
+# US-39: TLS Ingress with cert-manager and Let's Encrypt
+#
+# Prerequisites:
+# 1. Install NGINX Ingress Controller:
+#    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.9.0/deploy/static/provider/cloud/deploy.yaml
+#
+# 2. Install cert-manager and apply ClusterIssuers (see cert-manager.yml)
+#
+# 3. Update the host values below to match your actual domain
+#
+# 4. Apply this file:
+#    kubectl apply -f ingress.yml
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: main-ingress
+  namespace: microservices-cicd-platform
+  labels:
+    app.kubernetes.io/part-of: microservices-cicd-platform
+  annotations:
+    # cert-manager will automatically provision TLS certificates
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    # Force HTTPS redirect
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # Rate limiting to prevent abuse
+    nginx.ingress.kubernetes.io/rate-limit: "10"
+    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+    # Security headers
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      more_set_headers "X-Frame-Options: DENY";
+      more_set_headers "X-Content-Type-Options: nosniff";
+      more_set_headers "X-XSS-Protection: 1; mode=block";
+      more_set_headers "Referrer-Policy: strict-origin-when-cross-origin";
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - api.microservices-cicd.example.com
+        - app.microservices-cicd.example.com
+      secretName: microservices-tls
+  rules:
+    # Backend API route
+    - host: api.microservices-cicd.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-api
+                port:
+                  number: 8000
+    # Frontend application route
+    - host: app.microservices-cicd.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80

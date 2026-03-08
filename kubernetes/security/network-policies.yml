@@ -1,0 +1,278 @@
+# US-38: Network Policies para aislar trafico entre servicios
+# These policies implement a zero-trust network model:
+# 1. Deny all traffic by default
+# 2. Explicitly allow only required communication paths
+#
+# Prerequisites:
+# - A CNI plugin that supports NetworkPolicy (Calico, Cilium, Weave Net)
+# - kubectl apply -f network-policies.yml
+
+---
+# 1. Default deny all ingress and egress traffic
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: microservices-cicd-platform
+  labels:
+    app.kubernetes.io/part-of: microservices-cicd-platform
+    policy-type: baseline
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+
+---
+# 2. Backend API: accepts traffic from frontend and ingress,
+#    connects to postgres, redis, and DNS
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-backend-api
+  namespace: microservices-cicd-platform
+  labels:
+    app.kubernetes.io/part-of: microservices-cicd-platform
+    policy-type: application
+spec:
+  podSelector:
+    matchLabels:
+      app: backend-api
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Allow traffic from frontend pods
+    - from:
+        - podSelector:
+            matchLabels:
+              app: frontend
+      ports:
+        - protocol: TCP
+          port: 8000
+    # Allow traffic from ingress controller (typically in ingress-nginx namespace)
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 8000
+  egress:
+    # Allow connections to PostgreSQL
+    - to:
+        - podSelector:
+            matchLabels:
+              app: postgres
+      ports:
+        - protocol: TCP
+          port: 5432
+    # Allow connections to Redis
+    - to:
+        - podSelector:
+            matchLabels:
+              app: redis
+      ports:
+        - protocol: TCP
+          port: 6379
+    # Allow DNS resolution (kube-dns / CoreDNS in kube-system)
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+
+---
+# 3. Backend Worker (Celery): connects to postgres, redis, DNS, and SMTP
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-backend-worker
+  namespace: microservices-cicd-platform
+  labels:
+    app.kubernetes.io/part-of: microservices-cicd-platform
+    policy-type: application
+spec:
+  podSelector:
+    matchLabels:
+      app: backend-worker
+  policyTypes:
+    - Ingress
+    - Egress
+  egress:
+    # Allow connections to PostgreSQL
+    - to:
+        - podSelector:
+            matchLabels:
+              app: postgres
+      ports:
+        - protocol: TCP
+          port: 5432
+    # Allow connections to Redis
+    - to:
+        - podSelector:
+            matchLabels:
+              app: redis
+      ports:
+        - protocol: TCP
+          port: 6379
+    # Allow DNS resolution
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    # Allow external SMTP (email notifications)
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              - 10.0.0.0/8
+              - 172.16.0.0/12
+              - 192.168.0.0/16
+      ports:
+        - protocol: TCP
+          port: 587
+
+---
+# 4. PostgreSQL: accepts connections only from backend-api and backend-worker
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-postgres
+  namespace: microservices-cicd-platform
+  labels:
+    app.kubernetes.io/part-of: microservices-cicd-platform
+    policy-type: database
+spec:
+  podSelector:
+    matchLabels:
+      app: postgres
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: backend-api
+        - podSelector:
+            matchLabels:
+              app: backend-worker
+      ports:
+        - protocol: TCP
+          port: 5432
+
+---
+# 5. Redis: accepts connections only from backend-api and backend-worker
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-redis
+  namespace: microservices-cicd-platform
+  labels:
+    app.kubernetes.io/part-of: microservices-cicd-platform
+    policy-type: database
+spec:
+  podSelector:
+    matchLabels:
+      app: redis
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: backend-api
+        - podSelector:
+            matchLabels:
+              app: backend-worker
+      ports:
+        - protocol: TCP
+          port: 6379
+
+---
+# 6. Frontend: accepts traffic from ingress, connects to backend-api and DNS
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend
+  namespace: microservices-cicd-platform
+  labels:
+    app.kubernetes.io/part-of: microservices-cicd-platform
+    policy-type: application
+spec:
+  podSelector:
+    matchLabels:
+      app: frontend
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Allow traffic from ingress controller
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 80
+  egress:
+    # Allow connections to backend-api
+    - to:
+        - podSelector:
+            matchLabels:
+              app: backend-api
+      ports:
+        - protocol: TCP
+          port: 8000
+    # Allow DNS resolution
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+
+---
+# 7. Allow Prometheus (monitoring namespace) to scrape metrics from all pods
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-monitoring-scrape
+  namespace: microservices-cicd-platform
+  labels:
+    app.kubernetes.io/part-of: microservices-cicd-platform
+    policy-type: monitoring
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    # Allow Prometheus scraping from monitoring namespace
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+          podSelector:
+            matchLabels:
+              app: prometheus
+      ports:
+        - protocol: TCP
+          port: 8000
+        - protocol: TCP
+          port: 9090
+        - protocol: TCP
+          port: 9187

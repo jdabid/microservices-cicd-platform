@@ -33,6 +33,7 @@ spec:
         app.kubernetes.io/name: prometheus
         app.kubernetes.io/component: monitoring
     spec:
+      serviceAccountName: prometheus
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534
@@ -40,6 +41,12 @@ spec:
       containers:
         - name: prometheus
           image: prom/prometheus:v2.51.0
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
           args:
             - '--config.file=/etc/prometheus/prometheus.yml'
             - '--storage.tsdb.path=/prometheus'
