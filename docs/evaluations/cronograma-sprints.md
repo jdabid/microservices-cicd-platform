@@ -10,19 +10,19 @@
 | Metrica | Valor |
 |---------|-------|
 | Total User Stories | 50 |
-| Completadas | 21 |
+| Completadas | 28 |
 | En progreso | 0 |
-| Pendientes | 29 |
+| Pendientes | 22 |
 | Story Points totales | 136 |
-| Story Points completados | 52 |
-| Story Points restantes | 84 |
-| Velocidad actual | 31 SP (Sprint 1), 21 SP (Sprint 2) |
-| Sprint actual | Sprint 2 COMPLETADO |
+| Story Points completados | 73 |
+| Story Points restantes | 63 |
+| Velocidad actual | 31 SP (S1), 21 SP (S2), 21 SP (S3) |
+| Sprint actual | Sprint 3 COMPLETADO |
 
 ### Progreso Global
 
 ```
-Completado: [################______________________] 38%  (52/136 SP)
+Completado: [######################________________] 54%  (73/136 SP)
 ```
 
 ---
@@ -113,25 +113,33 @@ Sprint 2: [######################################] 100%  (21/21 SP)
 
 **Sprint Goal:** Infraestructura como codigo funcional que puede provisionar un ambiente completo en AWS.
 **Duracion:** Semana 5-6
-**Estado:** NO INICIADO
-**SP Completados:** 0/21
+**Estado:** COMPLETADO
+**SP Completados:** 21/21
 
 ```
-Sprint 3: [______________________________________] 0%  (0/21 SP)
+Sprint 3: [######################################] 100%  (21/21 SP)
 ```
 
 | ID | User Story | SP | Estado | Branch | PR | Fecha |
 |----|------------|----|---------|---------|----|-------|
-| US-22 | Estructura base Terraform con providers y backend remoto (S3 + DynamoDB) | 3 | PENDIENTE | — | — | — |
-| US-23 | Modulo VPC con subnets publicas/privadas, NAT gateway | 5 | PENDIENTE | — | — | — |
-| US-24 | Modulo EKS con cluster, node group, IAM roles | 5 | PENDIENTE | — | — | — |
-| US-25 | Modulo RDS para PostgreSQL con subnet group | 3 | PENDIENTE | — | — | — |
-| US-26 | Modulo ElastiCache para Redis con subnet group | 3 | PENDIENTE | — | — | — |
-| US-27 | tfvars para ambientes dev y prod diferenciados | 1 | PENDIENTE | — | — | — |
-| US-28 | Documentacion de infraestructura con diagrama de red | 1 | PENDIENTE | — | — | — |
+| US-22 | Estructura base Terraform con providers y backend remoto (S3 + DynamoDB) | 3 | DONE | `feature/s3-US22-to-US28-terraform` | [#21](https://github.com/jdabid/microservices-cicd-platform/pull/21) | 2026-03-10 |
+| US-23 | Modulo VPC con subnets publicas/privadas, NAT gateway | 5 | DONE | `feature/s3-US22-to-US28-terraform` | [#21](https://github.com/jdabid/microservices-cicd-platform/pull/21) | 2026-03-10 |
+| US-24 | Modulo EKS con cluster, node group, IAM roles | 5 | DONE | `feature/s3-US22-to-US28-terraform` | [#21](https://github.com/jdabid/microservices-cicd-platform/pull/21) | 2026-03-10 |
+| US-25 | Modulo RDS para PostgreSQL con subnet group | 3 | DONE | `feature/s3-US22-to-US28-terraform` | [#21](https://github.com/jdabid/microservices-cicd-platform/pull/21) | 2026-03-10 |
+| US-26 | Modulo ElastiCache para Redis con subnet group | 3 | DONE | `feature/s3-US22-to-US28-terraform` | [#21](https://github.com/jdabid/microservices-cicd-platform/pull/21) | 2026-03-10 |
+| US-27 | tfvars para ambientes dev y prod diferenciados | 1 | DONE | `feature/s3-US22-to-US28-terraform` | [#21](https://github.com/jdabid/microservices-cicd-platform/pull/21) | 2026-03-10 |
+| US-28 | Documentacion de infraestructura con diagrama de red | 1 | DONE | `feature/s3-US22-to-US28-terraform` | [#21](https://github.com/jdabid/microservices-cicd-platform/pull/21) | 2026-03-10 |
 
 ### Notas del Sprint 3
-_(sin notas aun)_
+- Sprint completo en una sola PR #21 (7 US batch, todas interdependientes)
+- 3 Agents en worktree isolation ejecutados en paralelo:
+  - Agent 1: US-22 + US-23 (base + VPC) — 8 archivos
+  - Agent 2: US-24 + US-25 + US-26 (EKS + RDS + ElastiCache) — 9 archivos
+  - Agent 3: US-27 + US-28 (tfvars + docs) — 3 archivos
+- Consolidacion manual de archivos desde 3 worktrees + integracion root main.tf/variables.tf/outputs.tf
+- 20 archivos, 1,227 lineas de Terraform
+- Modulos: vpc (2 AZ, IGW, NAT), eks (cluster + node group + IAM), rds (PostgreSQL 15), elasticache (Redis 7)
+- Ambientes: dev (cost-efficient) vs prod (HA, Multi-AZ, nodes mas grandes)
 
 ---
 
@@ -229,7 +237,10 @@ Restantes
       |              \
    89 |                \
       |                  \
-   84 |                    *  <- actual (21 US completadas, 52 SP, Sprint 2 DONE)
+   84 |                    *  <- fin Sprint 2 (21 US, 52 SP)
+      |                      \
+      |                        \
+   63 |                          *  <- actual (28 US completadas, 73 SP, Sprint 3 DONE)
       |
    83 |
       |
@@ -270,3 +281,10 @@ Restantes
 | 2026-03-10 | US-19 | COMPLETADA | 1 | Write (ci.yml), Edit (README.md), badges CI + coverage + security |
 | 2026-03-10 | US-20 | COMPLETADA | 2 | Write (ci.yml bandit job), Edit (pyproject.toml bandit config) |
 | 2026-03-10 | US-21 | COMPLETADA | 2 | Write (test_email_tasks.py, test_notification_tasks.py), 23 tests |
+| 2026-03-10 | US-22 | COMPLETADA | 3 | Write (versions.tf, providers.tf, main.tf, variables.tf, outputs.tf) |
+| 2026-03-10 | US-23 | COMPLETADA | 5 | Write (modules/vpc/*), VPC + 2 AZ + IGW + NAT |
+| 2026-03-10 | US-24 | COMPLETADA | 5 | Write (modules/eks/*), cluster + node group + IAM roles |
+| 2026-03-10 | US-25 | COMPLETADA | 3 | Write (modules/rds/*), PostgreSQL 15 + encryption + backups |
+| 2026-03-10 | US-26 | COMPLETADA | 3 | Write (modules/elasticache/*), Redis 7 + subnet group |
+| 2026-03-10 | US-27 | COMPLETADA | 1 | Write (environments/dev.tfvars, prod.tfvars) |
+| 2026-03-10 | US-28 | COMPLETADA | 1 | Write (terraform/README.md), ASCII network diagram |
