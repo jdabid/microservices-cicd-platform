@@ -2,7 +2,9 @@
 
 🚧 **Work in Progress** - Building a production-ready microservices platform 🚧
 
-[![CI Pipeline](https://github.com/tu-usuario/microservices-cicd-platform/workflows/CI%20Pipeline/badge.svg)](https://github.com/tu-usuario/microservices-cicd-platform/actions)
+[![CI Pipeline](https://github.com/jdabid/microservices-cicd-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/jdabid/microservices-cicd-platform/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/badge/coverage-80%25+-brightgreen)](https://github.com/jdabid/microservices-cicd-platform/actions/workflows/ci.yml)
+[![Security: Bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/jdabid/microservices-cicd-platform/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 A complete microservices platform demonstrating modern DevOps practices with Vertical Slice Architecture and CQRS pattern.
