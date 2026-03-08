@@ -1,7 +1,7 @@
 # Cronograma de Sprints — Tracking en Tiempo Real
 
 > Este documento se actualiza automaticamente cada vez que se finaliza una User Story.
-> Ultima actualizacion: 2026-03-09
+> Ultima actualizacion: 2026-03-10
 
 ---
 
@@ -10,19 +10,19 @@
 | Metrica | Valor |
 |---------|-------|
 | Total User Stories | 50 |
-| Completadas | 13 |
+| Completadas | 21 |
 | En progreso | 0 |
-| Pendientes | 37 |
+| Pendientes | 29 |
 | Story Points totales | 136 |
-| Story Points completados | 31 |
-| Story Points restantes | 105 |
-| Velocidad actual | 31 SP (Sprint 1 completado) |
-| Sprint actual | Sprint 2 NO INICIADO |
+| Story Points completados | 52 |
+| Story Points restantes | 84 |
+| Velocidad actual | 31 SP (Sprint 1), 21 SP (Sprint 2) |
+| Sprint actual | Sprint 2 COMPLETADO |
 
 ### Progreso Global
 
 ```
-Completado: [#########_____________________________] 23%  (31/136 SP)
+Completado: [################______________________] 38%  (52/136 SP)
 ```
 
 ---
@@ -77,26 +77,35 @@ Sprint 1: [#####################################_] 97%  (31/32 SP)
 
 **Sprint Goal:** Alcanzar >80% de coverage con tests de integracion y pipeline CI reportando calidad.
 **Duracion:** Semana 3-4
-**Estado:** NO INICIADO
-**SP Completados:** 0/21
+**Estado:** COMPLETADO
+**SP Completados:** 21/21
 
 ```
-Sprint 2: [______________________________________] 0%  (0/21 SP)
+Sprint 2: [######################################] 100%  (21/21 SP)
 ```
 
 | ID | User Story | SP | Estado | Branch | PR | Fecha |
 |----|------------|----|---------|---------|----|-------|
-| US-14 | Tests de integracion con TestClient para appointments/ | 5 | PENDIENTE | — | — | — |
-| US-15 | Tests de integracion con TestClient para patients/ | 3 | PENDIENTE | — | — | — |
-| US-16 | Tests de integracion para auth/ | 3 | PENDIENTE | — | — | — |
-| US-17 | pytest-cov con threshold minimo 80% y reporte HTML | 2 | PENDIENTE | — | — | — |
-| US-18 | Pre-commit hooks con black, ruff, mypy | 3 | PENDIENTE | — | — | — |
-| US-19 | Coverage badge en CI y README actualizado | 1 | PENDIENTE | — | — | — |
-| US-20 | Agregar bandit al pipeline CI | 2 | PENDIENTE | — | — | — |
-| US-21 | Tests para Celery tasks (email, notification) | 2 | PENDIENTE | — | — | — |
+| US-14 | Tests de integracion con TestClient para appointments/ | 5 | DONE | `feature/s2-US14-to-US16-integration-tests` | [#18](https://github.com/jdabid/microservices-cicd-platform/pull/18) | 2026-03-09 |
+| US-15 | Tests de integracion con TestClient para patients/ | 3 | DONE | `feature/s2-US14-to-US16-integration-tests` | [#18](https://github.com/jdabid/microservices-cicd-platform/pull/18) | 2026-03-09 |
+| US-16 | Tests de integracion para auth/ | 3 | DONE | `feature/s2-US14-to-US16-integration-tests` | [#18](https://github.com/jdabid/microservices-cicd-platform/pull/18) | 2026-03-09 |
+| US-17 | pytest-cov con threshold minimo 80% y reporte HTML | 2 | DONE | `feature/s2-US17-pytest-cov-threshold` | — | 2026-03-09 |
+| US-18 | Pre-commit hooks con black, ruff, mypy | 3 | DONE | `feature/s2-US18-pre-commit-hooks` | [#17](https://github.com/jdabid/microservices-cicd-platform/pull/17) | 2026-03-09 |
+| US-19 | Coverage badge en CI y README actualizado | 1 | DONE | `feature/s2-US19-to-US20-ci-pipeline` | [#19](https://github.com/jdabid/microservices-cicd-platform/pull/19) | 2026-03-10 |
+| US-20 | Agregar bandit al pipeline CI | 2 | DONE | `feature/s2-US19-to-US20-ci-pipeline` | [#19](https://github.com/jdabid/microservices-cicd-platform/pull/19) | 2026-03-10 |
+| US-21 | Tests para Celery tasks (email, notification) | 2 | DONE | `feature/s2-US21-celery-task-tests` | [#20](https://github.com/jdabid/microservices-cicd-platform/pull/20) | 2026-03-10 |
 
 ### Notas del Sprint 2
-_(sin notas aun)_
+- US-18 completada primero (PR #17): .pre-commit-config.yaml con black, ruff, mypy, pre-commit-hooks
+- US-14, US-15, US-16 completadas en batch (misma PR #18, tests de integracion interdependientes)
+- US-14: 8 tests (create, get, list, cancel, update appointments)
+- US-15: 7 tests (create, get, list, update, soft-delete patients)
+- US-16: 7 tests (register, login, token validation, protected routes)
+- US-17: pytest-cov configurado con --cov-fail-under=80 y reporte HTML
+- US-19 y US-20 completadas en batch (misma PR #19): CI pipeline con 3 jobs (lint, test, security)
+- US-19: GitHub Actions CI con pytest-cov, coverage badge en README, PR coverage comments
+- US-20: Bandit security scan job, falla en HIGH severity, config en pyproject.toml
+- US-21 completada independiente (PR #20): 23 tests para Celery tasks (13 email + 10 notification)
 
 ---
 
@@ -210,19 +219,17 @@ _(sin notas aun)_
 ```
 Story Points
 Restantes
-  136 |
-      |
-  125 |
-      |
-  115 |
-      |
-  113 |
-      |
-  105 |   *  <- actual (13 US completadas, 31 SP)
-      |
-  120 |
-      |
-  104 |
+  136 |*
+      |  \
+  125 |    \
+      |      \
+  115 |        \
+      |          \
+  105 |            *  <- fin Sprint 1 (13 US, 31 SP)
+      |              \
+   89 |                \
+      |                  \
+   84 |                    *  <- actual (21 US completadas, 52 SP, Sprint 2 DONE)
       |
    83 |
       |
@@ -255,3 +262,11 @@ Restantes
 | 2026-03-08 | US-13 | COMPLETADA | 1 | Edit (Dockerfile, Dockerfile.worker, frontend/Dockerfile) |
 | 2026-03-09 | US-06 | COMPLETADA | 5 | Write (model, schemas, commands, queries, router), Edit (main.py) |
 | 2026-03-09 | US-07 | COMPLETADA | 3 | Write (test_commands.py, test_queries.py), 13 tests passing |
+| 2026-03-09 | US-18 | COMPLETADA | 3 | Write (.pre-commit-config.yaml), pre-commit hooks: black, ruff, mypy |
+| 2026-03-09 | US-14 | COMPLETADA | 5 | Write (test_appointments.py), 8 integration tests con TestClient |
+| 2026-03-09 | US-15 | COMPLETADA | 3 | Write (test_patients.py), 7 integration tests con TestClient |
+| 2026-03-09 | US-16 | COMPLETADA | 3 | Write (test_auth.py), 7 integration tests con TestClient |
+| 2026-03-09 | US-17 | COMPLETADA | 2 | Edit (pyproject.toml), pytest-cov --cov-fail-under=80 + HTML report |
+| 2026-03-10 | US-19 | COMPLETADA | 1 | Write (ci.yml), Edit (README.md), badges CI + coverage + security |
+| 2026-03-10 | US-20 | COMPLETADA | 2 | Write (ci.yml bandit job), Edit (pyproject.toml bandit config) |
+| 2026-03-10 | US-21 | COMPLETADA | 2 | Write (test_email_tasks.py, test_notification_tasks.py), 23 tests |
