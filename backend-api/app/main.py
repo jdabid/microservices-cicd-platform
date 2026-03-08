@@ -13,6 +13,8 @@ from slowapi.errors import RateLimitExceeded
 from starlette.exceptions import HTTPException
 
 from app.core.config import settings
+from app.core.logging import setup_logging
+from app.core.middleware import CorrelationIdMiddleware
 from app.common.exceptions import AppException
 from app.common.exceptions.handlers import (
     app_exception_handler,
@@ -23,6 +25,9 @@ from app.common.exceptions.handlers import (
 from app.features.appointments.router import router as appointments_router
 from app.features.auth.router import router as auth_router
 from app.features.patients.router import router as patients_router
+
+# Configure structured JSON logging
+setup_logging()
 
 # Rate limiter instance
 limiter = Limiter(key_func=get_remote_address)
@@ -54,6 +59,8 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 cors_origins = settings.BACKEND_CORS_ORIGINS
 if settings.ENVIRONMENT == "production" and "*" in cors_origins:
     cors_origins = [o for o in cors_origins if o != "*"]
+
+app.add_middleware(CorrelationIdMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
