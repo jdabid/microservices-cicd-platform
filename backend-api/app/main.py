@@ -2,6 +2,9 @@
 FastAPI Main Application
 Vertical Slice Architecture + CQRS Pattern
 """
+import logging
+
+import redis.asyncio as aioredis
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
@@ -10,9 +13,11 @@ from prometheus_fastapi_instrumentator import Instrumentator
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
+from sqlalchemy import text
 from starlette.exceptions import HTTPException
 
 from app.core.config import settings
+from app.common.database.session import AsyncSessionLocal
 from app.core.logging import setup_logging
 from app.core.middleware import CorrelationIdMiddleware
 from app.common.exceptions import AppException
@@ -131,28 +136,53 @@ async def health_check():
 
 
 @app.get("/ready")
-async def readiness_check():
+async def readiness_check() -> JSONResponse:
     """
-    Readiness check endpoint for Kubernetes readiness probe
+    Readiness check endpoint for Kubernetes readiness probe.
 
-    Should check:
-    - Database connectivity
-    - Redis connectivity
-    - Any critical dependencies
+    Checks:
+    - Database (PostgreSQL) connectivity via SELECT 1
+    - Redis connectivity via PING
 
-    Returns 200 when ready to serve traffic
+    Returns 200 when all dependencies are reachable, 503 otherwise.
     """
-    # TODO: Add database connectivity check
-    # TODO: Add Redis connectivity check
+    logger = logging.getLogger(__name__)
+    checks: dict[str, str] = {}
 
-    return {
-        "status": "ready",
-        "service": "backend-api",
-        "checks": {
-            "database": "ok",  # TODO: Implement actual check
-            "redis": "ok"  # TODO: Implement actual check
-        }
+    # Check database connectivity
+    try:
+        async with AsyncSessionLocal() as session:
+            await session.execute(text("SELECT 1"))
+        checks["database"] = "ok"
+    except Exception as exc:
+        logger.error("Readiness probe: database check failed: %s", exc)
+        checks["database"] = "failed"
+
+    # Check Redis connectivity
+    try:
+        redis_client = aioredis.Redis(
+            host=settings.REDIS_HOST,
+            port=settings.REDIS_PORT,
+            db=settings.REDIS_DB,
+            socket_connect_timeout=2,
+        )
+        try:
+            await redis_client.ping()
+            checks["redis"] = "ok"
+        finally:
+            await redis_client.aclose()
+    except Exception as exc:
+        logger.error("Readiness probe: redis check failed: %s", exc)
+        checks["redis"] = "failed"
+
+    all_ok = all(v == "ok" for v in checks.values())
+    status_code = 200 if all_ok else 503
+    body = {
+        "status": "ready" if all_ok else "not_ready",
+        "checks": checks,
     }
+
+    return JSONResponse(content=body, status_code=status_code)
 
 
 if __name__ == "__main__":
