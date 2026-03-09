@@ -70,6 +70,47 @@ groups:
           summary: "Disk space running low on {{ $labels.instance }}"
           description: "Less than 15% disk space available on {{ $labels.mountpoint }} (current value: {{ $value | humanizePercentage }})."
 
+  - name: slo_burn_rate_alerts
+    rules:
+      - alert: SLOHighBurnRate1h
+        expr: >
+          (
+            sum(rate(http_requests_total{status_code=~"5.."}[1h]))
+            / sum(rate(http_requests_total[1h]))
+          ) > (14.4 * 0.001)
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High error burn rate (1h window) - SLO at risk"
+          description: "1h error burn rate is {{ $value | humanizePercentage }}, exceeding 14.4x threshold. Error budget will be exhausted in less than 3 days at this rate."
+
+      - alert: SLOHighBurnRate6h
+        expr: >
+          (
+            sum(rate(http_requests_total{status_code=~"5.."}[6h]))
+            / sum(rate(http_requests_total[6h]))
+          ) > (6 * 0.001)
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Elevated error burn rate (6h window)"
+          description: "6h error burn rate is {{ $value | humanizePercentage }}, exceeding 6x threshold. Error budget consumption is unsustainable."
+
+      - alert: SLOLatencyBudgetBurn
+        expr: >
+          (
+            sum(rate(http_request_duration_seconds_bucket{le="0.5"}[1h]))
+            / sum(rate(http_request_duration_seconds_count[1h]))
+          ) < 0.95
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Latency SLO at risk - >5% requests above 500ms"
+          description: "Only {{ $value | humanizePercentage }} of requests are completing under 500ms (target: 95%)."
+
   - name: database_alerts
     rules:
       - alert: PostgresDown
