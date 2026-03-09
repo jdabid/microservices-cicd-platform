@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: microservices-platform-prod
+  namespace: argocd
+  labels:
+    app.kubernetes.io/part-of: microservices-platform
+    environment: prod
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: microservices-platform
+  source:
+    repoURL: https://github.com/jdabid/microservices-cicd-platform.git
+    targetRevision: main
+    path: helm/microservices-platform
+    helm:
+      valueFiles:
+        - values.yaml
+        - values-prod.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: microservices-prod
+  syncPolicy:
+    # No automated sync for production - requires manual approval
+    syncOptions:
+      - CreateNamespace=true
+      - PruneLast=true
+    retry:
+      limit: 3
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 5m

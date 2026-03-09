@@ -1,0 +1,84 @@
+# Staging environment overrides
+global:
+  environment: staging
+
+backendApi:
+  replicaCount: 2
+  image:
+    pullPolicy: Always
+  resources:
+    requests:
+      cpu: 150m
+      memory: 192Mi
+    limits:
+      cpu: 750m
+      memory: 768Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 8
+    targetCPUUtilization: 65
+
+backendWorker:
+  replicaCount: 1
+  image:
+    pullPolicy: Always
+  resources:
+    requests:
+      cpu: 150m
+      memory: 192Mi
+    limits:
+      cpu: 375m
+      memory: 384Mi
+
+postgres:
+  storage:
+    size: 20Gi
+  resources:
+    requests:
+      cpu: 150m
+      memory: 384Mi
+    limits:
+      cpu: 750m
+      memory: 768Mi
+
+redis:
+  resources:
+    requests:
+      cpu: 75m
+      memory: 96Mi
+    limits:
+      cpu: 350m
+      memory: 192Mi
+
+frontend:
+  replicaCount: 2
+  image:
+    pullPolicy: Always
+  resources:
+    requests:
+      cpu: 75m
+      memory: 96Mi
+    limits:
+      cpu: 350m
+      memory: 192Mi
+
+ingress:
+  enabled: true
+  hosts:
+    - host: api.staging.microservices-cicd.example.com
+      paths:
+        - path: /
+          service: backend-api
+    - host: app.staging.microservices-cicd.example.com
+      paths:
+        - path: /
+          service: frontend
+  tls:
+    - secretName: microservices-staging-tls
+      hosts:
+        - api.staging.microservices-cicd.example.com
+        - app.staging.microservices-cicd.example.com
+
+networkPolicy:
+  enabled: true
