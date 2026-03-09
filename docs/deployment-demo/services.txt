@@ -1,0 +1,6 @@
++ kubectl get svc -n microservices-cicd-platform --context kind-microservices-demo
+NAME                                      TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+demo-microservices-platform-backend-api   ClusterIP   10.96.158.79    <none>        8000/TCP   3m37s
+demo-microservices-platform-frontend      ClusterIP   10.96.60.12     <none>        80/TCP     3m36s
+demo-microservices-platform-postgres      ClusterIP   10.96.108.165   <none>        5432/TCP   3m36s
+demo-microservices-platform-redis         ClusterIP   10.96.214.106   <none>        6379/TCP   3m36s

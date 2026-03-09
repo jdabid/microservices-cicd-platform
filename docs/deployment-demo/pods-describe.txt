@@ -1,0 +1,428 @@
++ kubectl describe pods -n microservices-cicd-platform --context kind-microservices-demo
+Name:             demo-microservices-platform-backend-api-7d976d8856-7mksw
+Namespace:        microservices-cicd-platform
+Priority:         0
+Service Account:  default
+Node:             microservices-demo-control-plane/192.168.107.2
+Start Time:       Sun, 08 Mar 2026 22:32:39 -0500
+Labels:           app.kubernetes.io/component=api
+                  app.kubernetes.io/instance=demo
+                  app.kubernetes.io/managed-by=Helm
+                  app.kubernetes.io/name=microservices-platform
+                  app.kubernetes.io/part-of=microservices-platform
+                  app.kubernetes.io/version=1.0.0
+                  helm.sh/chart=microservices-platform-0.1.0
+                  pod-template-hash=7d976d8856
+Annotations:      <none>
+Status:           Running
+IP:               10.244.0.7
+IPs:
+  IP:           10.244.0.7
+Controlled By:  ReplicaSet/demo-microservices-platform-backend-api-7d976d8856
+Containers:
+  backend-api:
+    Container ID:   containerd://b8071365fdb1b9c8474b9d39cae06e4eca9f977f26a120efb19cb4861f7ea9c5
+    Image:          microservices-backend:local
+    Image ID:       sha256:506c8e3f9c6a463a5c2180087d1148b6148345340dcd9cb7f00104cbdd6bf1d9
+    Port:           8000/TCP (http)
+    Host Port:      0/TCP (http)
+    State:          Running
+      Started:      Sun, 08 Mar 2026 22:35:41 -0500
+    Last State:     Terminated
+      Reason:       Completed
+      Exit Code:    0
+      Started:      Sun, 08 Mar 2026 22:34:41 -0500
+      Finished:     Sun, 08 Mar 2026 22:35:41 -0500
+    Ready:          False
+    Restart Count:  3
+    Limits:
+      cpu:     500m
+      memory:  512Mi
+    Requests:
+      cpu:      100m
+      memory:   128Mi
+    Liveness:   http-get http://:http/health delay=15s timeout=5s period=15s #success=1 #failure=3
+    Readiness:  http-get http://:http/health delay=10s timeout=5s period=10s #success=1 #failure=3
+    Environment:
+      DATABASE_URL:  <set to the key 'database-url' in secret 'backend-secrets'>  Optional: false
+      REDIS_URL:     <set to the key 'redis-url' in secret 'backend-secrets'>     Optional: false
+      SECRET_KEY:    <set to the key 'secret-key' in secret 'backend-secrets'>    Optional: false
+    Mounts:
+      /tmp from tmp (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-6dmkz (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  tmp:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  kube-api-access-6dmkz:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason     Age                  From               Message
+  ----     ------     ----                 ----               -------
+  Normal   Scheduled  3m35s                default-scheduler  Successfully assigned microservices-cicd-platform/demo-microservices-platform-backend-api-7d976d8856-7mksw to microservices-demo-control-plane
+  Warning  Unhealthy  49s (x8 over 3m3s)   kubelet            spec.containers{backend-api}: Liveness probe failed: Get "http://10.244.0.7:8000/health": dial tcp 10.244.0.7:8000: connect: connection refused
+  Warning  Unhealthy  40s (x17 over 3m6s)  kubelet            spec.containers{backend-api}: Readiness probe failed: Get "http://10.244.0.7:8000/health": dial tcp 10.244.0.7:8000: connect: connection refused
+  Normal   Killing    34s (x3 over 2m33s)  kubelet            spec.containers{backend-api}: Container backend-api failed liveness probe, will be restarted
+  Normal   Pulled     33s (x4 over 3m28s)  kubelet            spec.containers{backend-api}: Container image "microservices-backend:local" already present on machine and can be accessed by the pod
+  Normal   Created    33s (x4 over 3m27s)  kubelet            spec.containers{backend-api}: Container created
+  Normal   Started    33s (x4 over 3m19s)  kubelet            spec.containers{backend-api}: Container started
+
+
+Name:             demo-microservices-platform-backend-worker-567dc46984-jvgnd
+Namespace:        microservices-cicd-platform
+Priority:         0
+Service Account:  default
+Node:             microservices-demo-control-plane/192.168.107.2
+Start Time:       Sun, 08 Mar 2026 22:32:39 -0500
+Labels:           app.kubernetes.io/component=worker
+                  app.kubernetes.io/instance=demo
+                  app.kubernetes.io/managed-by=Helm
+                  app.kubernetes.io/name=microservices-platform
+                  app.kubernetes.io/part-of=microservices-platform
+                  app.kubernetes.io/version=1.0.0
+                  helm.sh/chart=microservices-platform-0.1.0
+                  pod-template-hash=567dc46984
+Annotations:      <none>
+Status:           Running
+IP:               10.244.0.8
+IPs:
+  IP:           10.244.0.8
+Controlled By:  ReplicaSet/demo-microservices-platform-backend-worker-567dc46984
+Containers:
+  backend-worker:
+    Container ID:  containerd://3bfc618c13560dc018939f75ef1d302a8a83fa06457e46ef4ee7220d7a008243
+    Image:         microservices-worker:local
+    Image ID:      sha256:beee950e254e1643b51a58dbda28985ccc3efeca89c596a626eabde9f0d9727d
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      celery
+      -A
+      app.core.celery.app
+      worker
+      --loglevel=info
+    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
+      Reason:       Error
+      Exit Code:    2
+      Started:      Sun, 08 Mar 2026 22:35:12 -0500
+      Finished:     Sun, 08 Mar 2026 22:35:18 -0500
+    Ready:          False
+    Restart Count:  4
+    Limits:
+      cpu:     250m
+      memory:  256Mi
+    Requests:
+      cpu:      100m
+      memory:   128Mi
+    Liveness:   exec [celery inspect ping --timeout 5] delay=30s timeout=10s period=30s #success=1 #failure=3
+    Readiness:  exec [celery inspect ping --timeout 5] delay=15s timeout=10s period=15s #success=1 #failure=3
+    Environment:
+      DATABASE_URL:  <set to the key 'database-url' in secret 'backend-secrets'>  Optional: false
+      REDIS_URL:     <set to the key 'redis-url' in secret 'backend-secrets'>     Optional: false
+      SECRET_KEY:    <set to the key 'secret-key' in secret 'backend-secrets'>    Optional: false
+    Mounts:
+      /tmp from tmp (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-8wkdg (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  tmp:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  kube-api-access-8wkdg:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason     Age                   From               Message
+  ----     ------     ----                  ----               -------
+  Normal   Scheduled  3m36s                 default-scheduler  Successfully assigned microservices-cicd-platform/demo-microservices-platform-backend-worker-567dc46984-jvgnd to microservices-demo-control-plane
+  Warning  Unhealthy  101s (x3 over 2m57s)  kubelet            spec.containers{backend-worker}: Readiness probe errored and resulted in unknown state: rpc error: code = Unknown desc = failed to exec in container: container is in CONTAINER_EXITED state
+  Normal   Pulled     62s (x5 over 3m28s)   kubelet            spec.containers{backend-worker}: Container image "microservices-worker:local" already present on machine and can be accessed by the pod
+  Normal   Created    62s (x5 over 3m27s)   kubelet            spec.containers{backend-worker}: Container created
+  Normal   Started    61s (x5 over 3m19s)   kubelet            spec.containers{backend-worker}: Container started
+  Warning  BackOff    34s (x7 over 2m42s)   kubelet            spec.containers{backend-worker}: Back-off restarting failed container backend-worker in pod demo-microservices-platform-backend-worker-567dc46984-jvgnd_microservices-cicd-platform(8162716e-6d5c-4737-84cc-7522dcb86770)
+
+
+Name:             demo-microservices-platform-frontend-566f4bbd7c-dxzxt
+Namespace:        microservices-cicd-platform
+Priority:         0
+Service Account:  default
+Node:             microservices-demo-control-plane/192.168.107.2
+Start Time:       Sun, 08 Mar 2026 22:32:39 -0500
+Labels:           app.kubernetes.io/component=ui
+                  app.kubernetes.io/instance=demo
+                  app.kubernetes.io/managed-by=Helm
+                  app.kubernetes.io/name=microservices-platform
+                  app.kubernetes.io/part-of=microservices-platform
+                  app.kubernetes.io/version=1.0.0
+                  helm.sh/chart=microservices-platform-0.1.0
+                  pod-template-hash=566f4bbd7c
+Annotations:      <none>
+Status:           Running
+IP:               10.244.0.5
+IPs:
+  IP:           10.244.0.5
+Controlled By:  ReplicaSet/demo-microservices-platform-frontend-566f4bbd7c
+Containers:
+  frontend:
+    Container ID:   containerd://9ce99996c211829ad550f03ab575918e2f9d9fafe8ba1b0c084e11c1926dbff9
+    Image:          microservices-frontend:local
+    Image ID:       sha256:9973775d56fc3d233ceff591eaf5b3ace6a1c6af966fe20963abed1dd827cd51
+    Port:           80/TCP (http)
+    Host Port:      0/TCP (http)
+    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
+      Reason:       Error
+      Exit Code:    1
+      Started:      Sun, 08 Mar 2026 22:35:58 -0500
+      Finished:     Sun, 08 Mar 2026 22:35:59 -0500
+    Ready:          False
+    Restart Count:  5
+    Limits:
+      cpu:     200m
+      memory:  128Mi
+    Requests:
+      cpu:        50m
+      memory:     64Mi
+    Liveness:     http-get http://:http/ delay=10s timeout=5s period=15s #success=1 #failure=3
+    Readiness:    http-get http://:http/ delay=5s timeout=5s period=10s #success=1 #failure=3
+    Environment:  <none>
+    Mounts:
+      /tmp from tmp (rw)
+      /var/cache/nginx from nginx-cache (rw)
+      /var/run from nginx-run (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-9hw5d (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  tmp:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  nginx-cache:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  nginx-run:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  kube-api-access-9hw5d:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason     Age                    From               Message
+  ----     ------     ----                   ----               -------
+  Normal   Scheduled  3m36s                  default-scheduler  Successfully assigned microservices-cicd-platform/demo-microservices-platform-frontend-566f4bbd7c-dxzxt to microservices-demo-control-plane
+  Warning  Unhealthy  3m15s (x2 over 3m16s)  kubelet            spec.containers{frontend}: Readiness probe failed: Get "http://10.244.0.5:80/": dial tcp 10.244.0.5:80: connect: connection refused
+  Normal   Pulled     16s (x6 over 3m28s)    kubelet            spec.containers{frontend}: Container image "microservices-frontend:local" already present on machine and can be accessed by the pod
+  Normal   Created    16s (x6 over 3m27s)    kubelet            spec.containers{frontend}: Container created
+  Normal   Started    16s (x6 over 3m19s)    kubelet            spec.containers{frontend}: Container started
+  Warning  BackOff    4s (x16 over 3m11s)    kubelet            spec.containers{frontend}: Back-off restarting failed container frontend in pod demo-microservices-platform-frontend-566f4bbd7c-dxzxt_microservices-cicd-platform(470b6b48-b106-4e2c-b377-b758c84db5fe)
+
+
+Name:             demo-microservices-platform-postgres-c9fc654b9-v98tn
+Namespace:        microservices-cicd-platform
+Priority:         0
+Service Account:  default
+Node:             microservices-demo-control-plane/192.168.107.2
+Start Time:       Sun, 08 Mar 2026 22:33:02 -0500
+Labels:           app.kubernetes.io/component=database
+                  app.kubernetes.io/instance=demo
+                  app.kubernetes.io/managed-by=Helm
+                  app.kubernetes.io/name=microservices-platform
+                  app.kubernetes.io/part-of=microservices-platform
+                  app.kubernetes.io/version=1.0.0
+                  helm.sh/chart=microservices-platform-0.1.0
+                  pod-template-hash=c9fc654b9
+Annotations:      <none>
+Status:           Running
+IP:               10.244.0.10
+IPs:
+  IP:           10.244.0.10
+Controlled By:  ReplicaSet/demo-microservices-platform-postgres-c9fc654b9
+Containers:
+  postgres:
+    Container ID:   containerd://320f8f2c8d74368169e5ac7b9a4ddaa0f20fee38bb2d8af2d9baeaaf3c12e02a
+    Image:          postgres:15
+    Image ID:       docker.io/library/postgres@sha256:f30e3de0ac9cc938dac627ef2231099867c694b5f949fadb924c8c977428c399
+    Port:           5432/TCP (tcp)
+    Host Port:      0/TCP (tcp)
+    State:          Running
+      Started:      Sun, 08 Mar 2026 22:33:28 -0500
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     500m
+      memory:  512Mi
+    Requests:
+      cpu:      100m
+      memory:   256Mi
+    Liveness:   exec [pg_isready -U $(POSTGRES_USER) -d $(POSTGRES_DB)] delay=30s timeout=5s period=15s #success=1 #failure=3
+    Readiness:  exec [pg_isready -U $(POSTGRES_USER) -d $(POSTGRES_DB)] delay=10s timeout=5s period=10s #success=1 #failure=3
+    Environment:
+      POSTGRES_DB:        <set to the key 'postgres-db' in secret 'postgres-secrets'>        Optional: false
+      POSTGRES_USER:      <set to the key 'postgres-user' in secret 'postgres-secrets'>      Optional: false
+      POSTGRES_PASSWORD:  <set to the key 'postgres-password' in secret 'postgres-secrets'>  Optional: false
+      PGDATA:             /var/lib/postgresql/data/pgdata
+    Mounts:
+      /var/lib/postgresql/data from data (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-b9js9 (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  data:
+    Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
+    ClaimName:  demo-microservices-platform-postgres-data
+    ReadOnly:   false
+  kube-api-access-b9js9:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age    From               Message
+  ----    ------     ----   ----               -------
+  Normal  Scheduled  3m12s  default-scheduler  Successfully assigned microservices-cicd-platform/demo-microservices-platform-postgres-c9fc654b9-v98tn to microservices-demo-control-plane
+  Normal  Pulling    3m11s  kubelet            spec.containers{postgres}: Pulling image "postgres:15"
+  Normal  Pulled     2m46s  kubelet            spec.containers{postgres}: Successfully pulled image "postgres:15" in 25.328s (25.329s including waiting). Image size: 156687751 bytes.
+  Normal  Created    2m46s  kubelet            spec.containers{postgres}: Container created
+  Normal  Started    2m46s  kubelet            spec.containers{postgres}: Container started
+
+
+Name:             demo-microservices-platform-redis-975c4f556-2dn9g
+Namespace:        microservices-cicd-platform
+Priority:         0
+Service Account:  default
+Node:             microservices-demo-control-plane/192.168.107.2
+Start Time:       Sun, 08 Mar 2026 22:32:39 -0500
+Labels:           app.kubernetes.io/component=cache
+                  app.kubernetes.io/instance=demo
+                  app.kubernetes.io/managed-by=Helm
+                  app.kubernetes.io/name=microservices-platform
+                  app.kubernetes.io/part-of=microservices-platform
+                  app.kubernetes.io/version=1.0.0
+                  helm.sh/chart=microservices-platform-0.1.0
+                  pod-template-hash=975c4f556
+Annotations:      <none>
+Status:           Running
+IP:               10.244.0.9
+IPs:
+  IP:           10.244.0.9
+Controlled By:  ReplicaSet/demo-microservices-platform-redis-975c4f556
+Containers:
+  redis:
+    Container ID:  containerd://d32c4d3dadd46eba8130c781945447f4a1c759a34c55e150263236744a7287bb
+    Image:         redis:7-alpine
+    Image ID:      docker.io/library/redis@sha256:8b81dd37ff027bec4e516d41acfbe9fe2460070dc6d4a4570a2ac5b9d59df065
+    Port:          6379/TCP (tcp)
+    Host Port:     0/TCP (tcp)
+    Command:
+      redis-server
+      --appendonly
+      yes
+      --maxmemory
+      128mb
+      --maxmemory-policy
+      allkeys-lru
+    State:          Running
+      Started:      Sun, 08 Mar 2026 22:33:00 -0500
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     200m
+      memory:  128Mi
+    Requests:
+      cpu:        50m
+      memory:     64Mi
+    Liveness:     exec [redis-cli ping] delay=15s timeout=5s period=15s #success=1 #failure=3
+    Readiness:    exec [redis-cli ping] delay=5s timeout=5s period=10s #success=1 #failure=3
+    Environment:  <none>
+    Mounts:
+      /data from data (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-pn2vb (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  data:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  kube-api-access-pn2vb:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason     Age    From               Message
+  ----     ------     ----   ----               -------
+  Normal   Scheduled  3m36s  default-scheduler  Successfully assigned microservices-cicd-platform/demo-microservices-platform-redis-975c4f556-2dn9g to microservices-demo-control-plane
+  Normal   Pulling    3m28s  kubelet            spec.containers{redis}: Pulling image "redis:7-alpine"
+  Normal   Pulled     3m14s  kubelet            spec.containers{redis}: Successfully pulled image "redis:7-alpine" in 13.238s (13.24s including waiting). Image size: 17701006 bytes.
+  Normal   Created    3m14s  kubelet            spec.containers{redis}: Container created
+  Normal   Started    3m13s  kubelet            spec.containers{redis}: Container started
+  Warning  Unhealthy  103s   kubelet            spec.containers{redis}: Readiness probe failed: command timed out: "redis-cli ping" timed out after 5s

@@ -1,0 +1,46 @@
++ kubectl get events -n microservices-cicd-platform --context kind-microservices-demo --sort-by=.lastTimestamp
+LAST SEEN   TYPE      REASON                  OBJECT                                                             MESSAGE
+3m36s       Normal    Scheduled               pod/demo-microservices-platform-backend-worker-567dc46984-jvgnd    Successfully assigned microservices-cicd-platform/demo-microservices-platform-backend-worker-567dc46984-jvgnd to microservices-demo-control-plane
+3m12s       Normal    Scheduled               pod/demo-microservices-platform-postgres-c9fc654b9-v98tn           Successfully assigned microservices-cicd-platform/demo-microservices-platform-postgres-c9fc654b9-v98tn to microservices-demo-control-plane
+3m36s       Normal    Scheduled               pod/demo-microservices-platform-frontend-566f4bbd7c-dxzxt          Successfully assigned microservices-cicd-platform/demo-microservices-platform-frontend-566f4bbd7c-dxzxt to microservices-demo-control-plane
+3m36s       Normal    Scheduled               pod/demo-microservices-platform-redis-975c4f556-2dn9g              Successfully assigned microservices-cicd-platform/demo-microservices-platform-redis-975c4f556-2dn9g to microservices-demo-control-plane
+3m36s       Normal    Scheduled               pod/demo-microservices-platform-backend-api-7d976d8856-7mksw       Successfully assigned microservices-cicd-platform/demo-microservices-platform-backend-api-7d976d8856-7mksw to microservices-demo-control-plane
+3m36s       Normal    ScalingReplicaSet       deployment/demo-microservices-platform-postgres                    Scaled up replica set demo-microservices-platform-postgres-c9fc654b9 from 0 to 1
+3m36s       Normal    SuccessfulCreate        replicaset/demo-microservices-platform-redis-975c4f556             Created pod: demo-microservices-platform-redis-975c4f556-2dn9g
+3m36s       Normal    SuccessfulCreate        replicaset/demo-microservices-platform-backend-api-7d976d8856      Created pod: demo-microservices-platform-backend-api-7d976d8856-7mksw
+3m36s       Normal    ScalingReplicaSet       deployment/demo-microservices-platform-backend-api                 Scaled up replica set demo-microservices-platform-backend-api-7d976d8856 from 0 to 1
+3m36s       Normal    WaitForFirstConsumer    persistentvolumeclaim/demo-microservices-platform-postgres-data    waiting for first consumer to be created before binding
+3m36s       Normal    ScalingReplicaSet       deployment/demo-microservices-platform-redis                       Scaled up replica set demo-microservices-platform-redis-975c4f556 from 0 to 1
+3m36s       Normal    ScalingReplicaSet       deployment/demo-microservices-platform-frontend                    Scaled up replica set demo-microservices-platform-frontend-566f4bbd7c from 0 to 1
+3m36s       Normal    SuccessfulCreate        replicaset/demo-microservices-platform-frontend-566f4bbd7c         Created pod: demo-microservices-platform-frontend-566f4bbd7c-dxzxt
+3m36s       Normal    SuccessfulCreate        replicaset/demo-microservices-platform-postgres-c9fc654b9          Created pod: demo-microservices-platform-postgres-c9fc654b9-v98tn
+3m36s       Normal    SuccessfulCreate        replicaset/demo-microservices-platform-backend-worker-567dc46984   Created pod: demo-microservices-platform-backend-worker-567dc46984-jvgnd
+3m36s       Normal    ScalingReplicaSet       deployment/demo-microservices-platform-backend-worker              Scaled up replica set demo-microservices-platform-backend-worker-567dc46984 from 0 to 1
+3m35s       Normal    Provisioning            persistentvolumeclaim/demo-microservices-platform-postgres-data    External provisioner is provisioning volume for claim "microservices-cicd-platform/demo-microservices-platform-postgres-data"
+3m28s       Normal    Pulling                 pod/demo-microservices-platform-redis-975c4f556-2dn9g              Pulling image "redis:7-alpine"
+3m18s       Normal    ExternalProvisioning    persistentvolumeclaim/demo-microservices-platform-postgres-data    Waiting for a volume to be created either by the external provisioner 'rancher.io/local-path' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
+3m15s       Warning   Unhealthy               pod/demo-microservices-platform-frontend-566f4bbd7c-dxzxt          Readiness probe failed: Get "http://10.244.0.5:80/": dial tcp 10.244.0.5:80: connect: connection refused
+3m14s       Normal    Pulled                  pod/demo-microservices-platform-redis-975c4f556-2dn9g              Successfully pulled image "redis:7-alpine" in 13.238s (13.24s including waiting). Image size: 17701006 bytes.
+3m14s       Normal    Created                 pod/demo-microservices-platform-redis-975c4f556-2dn9g              Container created
+3m13s       Normal    ProvisioningSucceeded   persistentvolumeclaim/demo-microservices-platform-postgres-data    Successfully provisioned volume pvc-af5e5e4e-d567-45b4-b379-0df9d1ba7f26
+3m13s       Normal    Started                 pod/demo-microservices-platform-redis-975c4f556-2dn9g              Container started
+3m11s       Normal    Pulling                 pod/demo-microservices-platform-postgres-c9fc654b9-v98tn           Pulling image "postgres:15"
+2m46s       Normal    Pulled                  pod/demo-microservices-platform-postgres-c9fc654b9-v98tn           Successfully pulled image "postgres:15" in 25.328s (25.329s including waiting). Image size: 156687751 bytes.
+2m46s       Normal    Created                 pod/demo-microservices-platform-postgres-c9fc654b9-v98tn           Container created
+2m46s       Normal    Started                 pod/demo-microservices-platform-postgres-c9fc654b9-v98tn           Container started
+103s        Warning   Unhealthy               pod/demo-microservices-platform-redis-975c4f556-2dn9g              Readiness probe failed: command timed out: "redis-cli ping" timed out after 5s
+101s        Warning   Unhealthy               pod/demo-microservices-platform-backend-worker-567dc46984-jvgnd    Readiness probe errored and resulted in unknown state: rpc error: code = Unknown desc = failed to exec in container: container is in CONTAINER_EXITED state
+62s         Normal    Created                 pod/demo-microservices-platform-backend-worker-567dc46984-jvgnd    Container created
+62s         Normal    Pulled                  pod/demo-microservices-platform-backend-worker-567dc46984-jvgnd    Container image "microservices-worker:local" already present on machine and can be accessed by the pod
+61s         Normal    Started                 pod/demo-microservices-platform-backend-worker-567dc46984-jvgnd    Container started
+49s         Warning   Unhealthy               pod/demo-microservices-platform-backend-api-7d976d8856-7mksw       Liveness probe failed: Get "http://10.244.0.7:8000/health": dial tcp 10.244.0.7:8000: connect: connection refused
+40s         Warning   Unhealthy               pod/demo-microservices-platform-backend-api-7d976d8856-7mksw       Readiness probe failed: Get "http://10.244.0.7:8000/health": dial tcp 10.244.0.7:8000: connect: connection refused
+34s         Warning   BackOff                 pod/demo-microservices-platform-backend-worker-567dc46984-jvgnd    Back-off restarting failed container backend-worker in pod demo-microservices-platform-backend-worker-567dc46984-jvgnd_microservices-cicd-platform(8162716e-6d5c-4737-84cc-7522dcb86770)
+34s         Normal    Killing                 pod/demo-microservices-platform-backend-api-7d976d8856-7mksw       Container backend-api failed liveness probe, will be restarted
+33s         Normal    Started                 pod/demo-microservices-platform-backend-api-7d976d8856-7mksw       Container started
+33s         Normal    Created                 pod/demo-microservices-platform-backend-api-7d976d8856-7mksw       Container created
+33s         Normal    Pulled                  pod/demo-microservices-platform-backend-api-7d976d8856-7mksw       Container image "microservices-backend:local" already present on machine and can be accessed by the pod
+16s         Normal    Pulled                  pod/demo-microservices-platform-frontend-566f4bbd7c-dxzxt          Container image "microservices-frontend:local" already present on machine and can be accessed by the pod
+16s         Normal    Created                 pod/demo-microservices-platform-frontend-566f4bbd7c-dxzxt          Container created
+16s         Normal    Started                 pod/demo-microservices-platform-frontend-566f4bbd7c-dxzxt          Container started
+4s          Warning   BackOff                 pod/demo-microservices-platform-frontend-566f4bbd7c-dxzxt          Back-off restarting failed container frontend in pod demo-microservices-platform-frontend-566f4bbd7c-dxzxt_microservices-cicd-platform(470b6b48-b106-4e2c-b377-b758c84db5fe)

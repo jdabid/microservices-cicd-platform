@@ -1,0 +1,7 @@
++ kubectl get pods -n microservices-cicd-platform --context kind-microservices-demo -o wide
+NAME                                                          READY   STATUS             RESTARTS      AGE   IP            NODE                               NOMINATED NODE   READINESS GATES
+demo-microservices-platform-backend-api-7d976d8856-7mksw      0/1     Running            1 (22s ago)   88s   10.244.0.7    microservices-demo-control-plane   <none>           <none>
+demo-microservices-platform-backend-worker-567dc46984-jvgnd   0/1     Error              2 (36s ago)   88s   10.244.0.8    microservices-demo-control-plane   <none>           <none>
+demo-microservices-platform-frontend-566f4bbd7c-dxzxt         0/1     CrashLoopBackOff   3 (19s ago)   88s   10.244.0.5    microservices-demo-control-plane   <none>           <none>
+demo-microservices-platform-postgres-c9fc654b9-v98tn          1/1     Running            0             88s   10.244.0.10   microservices-demo-control-plane   <none>           <none>
+demo-microservices-platform-redis-975c4f556-2dn9g             1/1     Running            0             88s   10.244.0.9    microservices-demo-control-plane   <none>           <none>
