@@ -1,21 +1,47 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
-function AppointmentForm({ apiUrl, onAppointmentCreated }) {
-  const [formData, setFormData] = useState({
-    patient_name: '',
-    patient_email: '',
-    patient_phone: '',
-    doctor_name: '',
-    specialty: '',
-    appointment_date: '',
-    duration_minutes: 30,
-    reason: ''
-  })
+const EMPTY_FORM = {
+  patient_name: '',
+  patient_email: '',
+  patient_phone: '',
+  doctor_name: '',
+  specialty: '',
+  appointment_date: '',
+  duration_minutes: 30,
+  reason: ''
+}
 
+function AppointmentForm({ apiUrl, token, initialData, onAppointmentCreated, onCancel }) {
+  const isEditMode = !!initialData
+
+  const [formData, setFormData] = useState(EMPTY_FORM)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(false)
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        patient_name: initialData.patient_name || '',
+        patient_email: initialData.patient_email || '',
+        patient_phone: initialData.patient_phone || '',
+        doctor_name: initialData.doctor_name || '',
+        specialty: initialData.specialty || '',
+        appointment_date: initialData.appointment_date
+          ? initialData.appointment_date.slice(0, 16)
+          : '',
+        duration_minutes: initialData.duration_minutes || 30,
+        reason: initialData.reason || ''
+      })
+    } else {
+      setFormData(EMPTY_FORM)
+    }
+    setError(null)
+    setSuccess(false)
+  }, [initialData])
+
+  const authHeaders = token ? { Authorization: `Bearer ${token}` } : {}
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -32,28 +58,35 @@ function AppointmentForm({ apiUrl, onAppointmentCreated }) {
     setSuccess(false)
 
     try {
-      await axios.post(`${apiUrl}/api/v1/appointments/`, {
+      const payload = {
         ...formData,
         duration_minutes: parseInt(formData.duration_minutes)
-      })
+      }
+
+      if (isEditMode) {
+        await axios.put(
+          `${apiUrl}/api/v1/appointments/${initialData.id}`,
+          payload,
+          { headers: authHeaders }
+        )
+      } else {
+        await axios.post(
+          `${apiUrl}/api/v1/appointments/`,
+          payload,
+          { headers: authHeaders }
+        )
+      }
 
       setSuccess(true)
-      setFormData({
-        patient_name: '',
-        patient_email: '',
-        patient_phone: '',
-        doctor_name: '',
-        specialty: '',
-        appointment_date: '',
-        duration_minutes: 30,
-        reason: ''
-      })
+      if (!isEditMode) {
+        setFormData(EMPTY_FORM)
+      }
 
       setTimeout(() => setSuccess(false), 3000)
-      onAppointmentCreated()
+      if (onAppointmentCreated) onAppointmentCreated()
     } catch (err) {
-      console.error('Error creating appointment:', err)
-      setError(err.response?.data?.detail || 'Failed to create appointment')
+      console.error('Error saving appointment:', err)
+      setError(err.response?.data?.detail || 'Failed to save appointment')
     } finally {
       setLoading(false)
     }
@@ -62,7 +95,11 @@ function AppointmentForm({ apiUrl, onAppointmentCreated }) {
   return (
     <form className="appointment-form" onSubmit={handleSubmit}>
       {error && <div className="alert alert-error">{error}</div>}
-      {success && <div className="alert alert-success">✅ Appointment created successfully!</div>}
+      {success && (
+        <div className="alert alert-success">
+          Appointment {isEditMode ? 'updated' : 'created'} successfully!
+        </div>
+      )}
 
       <div className="form-row">
         <div className="form-group">
@@ -179,9 +216,21 @@ function AppointmentForm({ apiUrl, onAppointmentCreated }) {
         />
       </div>
 
-      <button type="submit" className="btn-submit" disabled={loading}>
-        {loading ? '⏳ Creating...' : '✅ Create Appointment'}
-      </button>
+      <div className="form-button-row">
+        <button type="submit" className="btn-submit" disabled={loading}>
+          {loading
+            ? 'Saving...'
+            : isEditMode
+              ? 'Update Appointment'
+              : 'Create Appointment'
+          }
+        </button>
+        {onCancel && (
+          <button type="button" className="btn-cancel" onClick={onCancel}>
+            Cancel
+          </button>
+        )}
+      </div>
     </form>
   )
 }
