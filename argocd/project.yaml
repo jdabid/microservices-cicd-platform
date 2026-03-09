@@ -1,13 +1,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: microservices
+  name: microservices-platform
   namespace: argocd
 spec:
   description: Medical Appointments Microservices Platform
   sourceRepos:
     - https://github.com/jdabid/microservices-cicd-platform.git
   destinations:
+    - namespace: microservices-dev
+      server: https://kubernetes.default.svc
+    - namespace: microservices-staging
+      server: https://kubernetes.default.svc
+    - namespace: microservices-prod
+      server: https://kubernetes.default.svc
     - namespace: microservices-cicd-platform
       server: https://kubernetes.default.svc
     - namespace: monitoring

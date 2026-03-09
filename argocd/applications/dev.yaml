@@ -1,23 +1,26 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: microservices-platform
+  name: microservices-platform-dev
   namespace: argocd
+  labels:
+    app.kubernetes.io/part-of: microservices-platform
+    environment: dev
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: microservices
+  project: microservices-platform
   source:
     repoURL: https://github.com/jdabid/microservices-cicd-platform.git
-    targetRevision: main
+    targetRevision: develop
     path: helm/microservices-platform
     helm:
       valueFiles:
         - values.yaml
-        - values-prod.yaml
+        - values-dev.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: microservices-cicd-platform
+    namespace: microservices-dev
   syncPolicy:
     automated:
       prune: true
