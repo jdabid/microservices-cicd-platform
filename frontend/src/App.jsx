@@ -1,31 +1,25 @@
 import React, { useState, useEffect } from 'react'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import axios from 'axios'
+import { AuthProvider } from './context/AuthContext'
+import ProtectedRoute from './components/ProtectedRoute'
+import LoginPage from './pages/LoginPage'
+import RegisterPage from './pages/RegisterPage'
+import DashboardPage from './pages/DashboardPage'
 import AppointmentList from './components/AppointmentList'
 import AppointmentForm from './components/AppointmentForm'
 import './App.css'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
-function App() {
+function AppointmentsPage() {
   const [appointments, setAppointments] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [apiHealth, setApiHealth] = useState(null)
 
   useEffect(() => {
-    checkApiHealth()
     fetchAppointments()
   }, [])
-
-  const checkApiHealth = async () => {
-    try {
-      const response = await axios.get(`${API_URL}/health`)
-      setApiHealth(response.data)
-    } catch (err) {
-      console.error('API Health check failed:', err)
-      setApiHealth({ status: 'unhealthy' })
-    }
-  }
 
   const fetchAppointments = async () => {
     try {
@@ -48,13 +42,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>🏥 Medical Appointments System</h1>
-        <div className="api-status">
-          API Status:
-          <span className={`status-badge ${apiHealth?.status === 'healthy' ? 'healthy' : 'unhealthy'}`}>
-            {apiHealth?.status || 'checking...'}
-          </span>
-        </div>
+        <h1>Medical Appointments System</h1>
       </header>
 
       <main className="App-main">
@@ -84,6 +72,37 @@ function App() {
         <p>Architecture: Vertical Slice + CQRS | Stack: FastAPI + React + Docker</p>
       </footer>
     </div>
+  )
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/appointments"
+            element={
+              <ProtectedRoute>
+                <AppointmentsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   )
 }
 
