@@ -1,189 +1,70 @@
-import React, { useState } from 'react'
-import axios from 'axios'
+import React from 'react'
 
-function AppointmentForm({ apiUrl, onAppointmentCreated }) {
-  const [formData, setFormData] = useState({
-    patient_name: '',
-    patient_email: '',
-    patient_phone: '',
-    doctor_name: '',
-    specialty: '',
-    appointment_date: '',
-    duration_minutes: 30,
-    reason: ''
-  })
+const STATUS_COLORS = {
+  scheduled: '#667eea',
+  confirmed: '#4caf50',
+  in_progress: '#ff9800',
+  completed: '#2e7d32',
+  cancelled: '#f44336',
+  no_show: '#9e9e9e'
+}
 
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [success, setSuccess] = useState(false)
-
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }))
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
-    setSuccess(false)
-
-    try {
-      await axios.post(`${apiUrl}/api/v1/appointments/`, {
-        ...formData,
-        duration_minutes: parseInt(formData.duration_minutes)
-      })
-
-      setSuccess(true)
-      setFormData({
-        patient_name: '',
-        patient_email: '',
-        patient_phone: '',
-        doctor_name: '',
-        specialty: '',
-        appointment_date: '',
-        duration_minutes: 30,
-        reason: ''
-      })
-
-      setTimeout(() => setSuccess(false), 3000)
-      onAppointmentCreated()
-    } catch (err) {
-      console.error('Error creating appointment:', err)
-      setError(err.response?.data?.detail || 'Failed to create appointment')
-    } finally {
-      setLoading(false)
-    }
+function AppointmentList({ appointments, onRefresh }) {
+  if (!appointments || appointments.length === 0) {
+    return (
+      <div className="appointments-container">
+        <button className="btn-refresh" onClick={onRefresh}>
+          Refresh
+        </button>
+        <div className="empty-state">
+          <p>No appointments found. Create one above!</p>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <form className="appointment-form" onSubmit={handleSubmit}>
-      {error && <div className="alert alert-error">{error}</div>}
-      {success && <div className="alert alert-success">✅ Appointment created successfully!</div>}
-
-      <div className="form-row">
-        <div className="form-group">
-          <label htmlFor="patient_name">Patient Name *</label>
-          <input
-            type="text"
-            id="patient_name"
-            name="patient_name"
-            value={formData.patient_name}
-            onChange={handleChange}
-            required
-            placeholder="John Doe"
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="patient_email">Email *</label>
-          <input
-            type="email"
-            id="patient_email"
-            name="patient_email"
-            value={formData.patient_email}
-            onChange={handleChange}
-            required
-            placeholder="john@example.com"
-          />
-        </div>
-      </div>
-
-      <div className="form-row">
-        <div className="form-group">
-          <label htmlFor="patient_phone">Phone</label>
-          <input
-            type="tel"
-            id="patient_phone"
-            name="patient_phone"
-            value={formData.patient_phone}
-            onChange={handleChange}
-            placeholder="+1 234 567 8900"
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="doctor_name">Doctor Name *</label>
-          <input
-            type="text"
-            id="doctor_name"
-            name="doctor_name"
-            value={formData.doctor_name}
-            onChange={handleChange}
-            required
-            placeholder="Dr. Smith"
-          />
-        </div>
-      </div>
-
-      <div className="form-row">
-        <div className="form-group">
-          <label htmlFor="specialty">Specialty *</label>
-          <select
-            id="specialty"
-            name="specialty"
-            value={formData.specialty}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Select specialty...</option>
-            <option value="General">General Medicine</option>
-            <option value="Cardiology">Cardiology</option>
-            <option value="Dermatology">Dermatology</option>
-            <option value="Pediatrics">Pediatrics</option>
-            <option value="Orthopedics">Orthopedics</option>
-            <option value="Neurology">Neurology</option>
-          </select>
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="duration_minutes">Duration (minutes) *</label>
-          <input
-            type="number"
-            id="duration_minutes"
-            name="duration_minutes"
-            value={formData.duration_minutes}
-            onChange={handleChange}
-            min="15"
-            max="240"
-            step="15"
-            required
-          />
-        </div>
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="appointment_date">Appointment Date & Time *</label>
-        <input
-          type="datetime-local"
-          id="appointment_date"
-          name="appointment_date"
-          value={formData.appointment_date}
-          onChange={handleChange}
-          required
-        />
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="reason">Reason for Visit</label>
-        <textarea
-          id="reason"
-          name="reason"
-          value={formData.reason}
-          onChange={handleChange}
-          rows="3"
-          placeholder="Describe the reason for the appointment..."
-        />
-      </div>
-
-      <button type="submit" className="btn-submit" disabled={loading}>
-        {loading ? '⏳ Creating...' : '✅ Create Appointment'}
+    <div className="appointments-container">
+      <button className="btn-refresh" onClick={onRefresh}>
+        Refresh
       </button>
-    </form>
+      <div className="appointments-grid">
+        {appointments.map((apt) => (
+          <div key={apt.id} className="appointment-card">
+            <div className="card-header">
+              <h3>{apt.patient_name || 'Unknown Patient'}</h3>
+              <span
+                className="status-badge"
+                style={{
+                  backgroundColor: STATUS_COLORS[apt.status] || '#9e9e9e',
+                  color: 'white'
+                }}
+              >
+                {apt.status || 'unknown'}
+              </span>
+            </div>
+            <div className="card-body">
+              <p><strong>Doctor:</strong> {apt.doctor_name || 'N/A'}</p>
+              <p><strong>Specialty:</strong> {apt.specialty || 'N/A'}</p>
+              <p><strong>Date:</strong> {apt.appointment_date
+                ? new Date(apt.appointment_date).toLocaleString()
+                : 'N/A'}
+              </p>
+              {apt.duration_minutes && (
+                <p><strong>Duration:</strong> {apt.duration_minutes} min</p>
+              )}
+              {apt.reason && (
+                <p><strong>Reason:</strong> {apt.reason}</p>
+              )}
+            </div>
+            <div className="card-footer">
+              <p>ID: {apt.id?.substring(0, 8) || 'N/A'}...</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }
 
-export default AppointmentForm
+export default AppointmentList
