@@ -65,11 +65,11 @@ function DashboardPage() {
               <h3>Appointments</h3>
               <p>Create and manage appointments</p>
             </Link>
-            <div className="nav-card nav-card-disabled">
+            <Link to="/patients" className="nav-card">
               <div className="nav-card-icon">&#x1F465;</div>
               <h3>Patients</h3>
-              <p>Coming soon</p>
-            </div>
+              <p>Manage patient records</p>
+            </Link>
           </div>
         </section>
       </main>

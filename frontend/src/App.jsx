@@ -6,6 +6,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import DashboardPage from './pages/DashboardPage'
+import PatientsPage from './pages/PatientsPage'
 import AppointmentList from './components/AppointmentList'
 import AppointmentForm from './components/AppointmentForm'
 import './App.css'
@@ -87,6 +88,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/patients"
+            element={
+              <ProtectedRoute>
+                <PatientsPage />
               </ProtectedRoute>
             }
           />
