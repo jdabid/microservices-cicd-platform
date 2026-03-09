@@ -1,21 +1,30 @@
 import React from 'react'
 
 const STATUS_COLORS = {
-  scheduled: '#667eea',
-  confirmed: '#4caf50',
-  in_progress: '#ff9800',
-  completed: '#2e7d32',
-  cancelled: '#f44336',
-  no_show: '#9e9e9e'
+  scheduled: '#3b82f6',
+  confirmed: '#22c55e',
+  cancelled: '#ef4444',
+  completed: '#6b7280',
+  no_show: '#f97316'
 }
 
-function AppointmentList({ appointments, onRefresh }) {
+const STATUS_LABELS = {
+  scheduled: 'Scheduled',
+  confirmed: 'Confirmed',
+  cancelled: 'Cancelled',
+  completed: 'Completed',
+  no_show: 'No Show'
+}
+
+function AppointmentList({ appointments, onRefresh, onEdit, onCancel }) {
   if (!appointments || appointments.length === 0) {
     return (
       <div className="appointments-container">
-        <button className="btn-refresh" onClick={onRefresh}>
-          Refresh
-        </button>
+        {onRefresh && (
+          <button className="btn-refresh" onClick={onRefresh}>
+            Refresh
+          </button>
+        )}
         <div className="empty-state">
           <p>No appointments found. Create one above!</p>
         </div>
@@ -25,22 +34,24 @@ function AppointmentList({ appointments, onRefresh }) {
 
   return (
     <div className="appointments-container">
-      <button className="btn-refresh" onClick={onRefresh}>
-        Refresh
-      </button>
+      {onRefresh && (
+        <button className="btn-refresh" onClick={onRefresh}>
+          Refresh
+        </button>
+      )}
       <div className="appointments-grid">
         {appointments.map((apt) => (
           <div key={apt.id} className="appointment-card">
             <div className="card-header">
               <h3>{apt.patient_name || 'Unknown Patient'}</h3>
               <span
-                className="status-badge"
+                className="appointment-status-badge"
                 style={{
-                  backgroundColor: STATUS_COLORS[apt.status] || '#9e9e9e',
+                  backgroundColor: STATUS_COLORS[apt.status] || '#6b7280',
                   color: 'white'
                 }}
               >
-                {apt.status || 'unknown'}
+                {STATUS_LABELS[apt.status] || apt.status || 'unknown'}
               </span>
             </div>
             <div className="card-body">
@@ -59,6 +70,26 @@ function AppointmentList({ appointments, onRefresh }) {
             </div>
             <div className="card-footer">
               <p>ID: {apt.id?.substring(0, 8) || 'N/A'}...</p>
+              {(onEdit || onCancel) && (
+                <div className="card-actions">
+                  {onEdit && (
+                    <button
+                      className="btn-action btn-action-edit"
+                      onClick={() => onEdit(apt)}
+                    >
+                      Edit
+                    </button>
+                  )}
+                  {onCancel && apt.status !== 'cancelled' && apt.status !== 'completed' && (
+                    <button
+                      className="btn-action btn-action-cancel"
+                      onClick={() => onCancel(apt.id)}
+                    >
+                      Cancel
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         ))}
