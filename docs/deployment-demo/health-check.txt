@@ -1,0 +1,1 @@
+Health check failed (expected - backend may not be fully ready)

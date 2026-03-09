@@ -1,0 +1,27 @@
++ kubectl get all -n microservices-cicd-platform --context kind-microservices-demo
+NAME                                                              READY   STATUS             RESTARTS      AGE
+pod/demo-microservices-platform-backend-api-7d976d8856-7mksw      0/1     Running            3 (33s ago)   3m36s
+pod/demo-microservices-platform-backend-worker-567dc46984-jvgnd   0/1     CrashLoopBackOff   4 (56s ago)   3m36s
+pod/demo-microservices-platform-frontend-566f4bbd7c-dxzxt         0/1     CrashLoopBackOff   5 (15s ago)   3m36s
+pod/demo-microservices-platform-postgres-c9fc654b9-v98tn          1/1     Running            0             3m36s
+pod/demo-microservices-platform-redis-975c4f556-2dn9g             1/1     Running            0             3m36s
+
+NAME                                              TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+service/demo-microservices-platform-backend-api   ClusterIP   10.96.158.79    <none>        8000/TCP   3m37s
+service/demo-microservices-platform-frontend      ClusterIP   10.96.60.12     <none>        80/TCP     3m36s
+service/demo-microservices-platform-postgres      ClusterIP   10.96.108.165   <none>        5432/TCP   3m36s
+service/demo-microservices-platform-redis         ClusterIP   10.96.214.106   <none>        6379/TCP   3m36s
+
+NAME                                                         READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/demo-microservices-platform-backend-api      0/1     1            0           3m36s
+deployment.apps/demo-microservices-platform-backend-worker   0/1     1            0           3m36s
+deployment.apps/demo-microservices-platform-frontend         0/1     1            0           3m36s
+deployment.apps/demo-microservices-platform-postgres         1/1     1            1           3m36s
+deployment.apps/demo-microservices-platform-redis            1/1     1            1           3m36s
+
+NAME                                                                    DESIRED   CURRENT   READY   AGE
+replicaset.apps/demo-microservices-platform-backend-api-7d976d8856      1         1         0       3m36s
+replicaset.apps/demo-microservices-platform-backend-worker-567dc46984   1         1         0       3m36s
+replicaset.apps/demo-microservices-platform-frontend-566f4bbd7c         1         1         0       3m36s
+replicaset.apps/demo-microservices-platform-postgres-c9fc654b9          1         1         1       3m36s
+replicaset.apps/demo-microservices-platform-redis-975c4f556             1         1         1       3m36s
