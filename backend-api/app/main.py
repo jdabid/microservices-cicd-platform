@@ -20,6 +20,7 @@ from app.core.config import settings
 from app.common.database.session import AsyncSessionLocal
 from app.core.logging import setup_logging
 from app.core.middleware import CorrelationIdMiddleware
+from app.core.tracing import setup_tracing, instrument_redis, shutdown_tracing
 from app.common.exceptions import AppException
 from app.common.exceptions.handlers import (
     app_exception_handler,
@@ -49,6 +50,10 @@ app = FastAPI(
 
 # Rate limiter state
 app.state.limiter = limiter
+
+# OpenTelemetry distributed tracing
+setup_tracing(app)
+instrument_redis()
 
 
 def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded) -> JSONResponse:
@@ -183,6 +188,12 @@ async def readiness_check() -> JSONResponse:
     }
 
     return JSONResponse(content=body, status_code=status_code)
+
+
+@app.on_event("shutdown")
+async def on_shutdown() -> None:
+    """Gracefully shut down the OpenTelemetry tracer provider."""
+    shutdown_tracing()
 
 
 if __name__ == "__main__":

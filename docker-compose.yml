@@ -52,6 +52,8 @@ services:
       SECRET_KEY: dev-secret-key-not-for-production
       API_V1_PREFIX: /api/v1
       BACKEND_CORS_ORIGINS: '["http://localhost:3000","http://localhost:80","http://frontend"]'
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
+      OTEL_SERVICE_NAME: backend-api
     depends_on:
       postgres:
         condition: service_healthy
